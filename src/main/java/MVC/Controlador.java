@@ -679,10 +679,11 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que los campos necesarios para actualizar no sean vacios
                 if (!devolucionesEditar.cbx_Libro.getSelectedItem().toString().isEmpty() && (devolucionesEditar.rb_Entregado.isSelected() || devolucionesEditar.rb_Pendiente.isSelected())) {
                     if (devolucionesEditar.rb_Entregado.isSelected()) {
-                        // Acciones a realizar cuando el botón rb_Entregado está seleccionado
+                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()), devolucionesEditar.cbx_Libro.getSelectedItem().toString(), false);
                         
                     } else if (devolucionesEditar.rb_Pendiente.isSelected()) {
                         // Acciones a realizar cuando el botón rb_Pendiente está seleccionado
+                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()), devolucionesEditar.cbx_Libro.getSelectedItem().toString(), true);
                         
                     }
                 }
