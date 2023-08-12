@@ -1302,42 +1302,39 @@ public class Modelo {
      * libro
      */
     public static JTable buscarLibro(JTable tabla, String nombreLibro) {
-    // Definir el nombre del procedimiento almacenado a llamar
-    String callProcedure = "{CALL BuscarLibrosPorNombre(?)}";
+        // Definir el nombre del procedimiento almacenado a llamar
+        String callProcedure = "{CALL BuscarLibrosPorNombre(?)}";
 
-    // Obtener el modelo de la tabla
-    DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-    modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+        // Obtener el modelo de la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+        modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
 
-    try (Connection conexion = Modelo.conectar(); CallableStatement callableStatement = conexion.prepareCall(callProcedure)) {
+        try ( Connection conexion = Modelo.conectar();  CallableStatement callableStatement = conexion.prepareCall(callProcedure)) {
 
-        // Establecer el parámetro para el procedimiento almacenado
-        callableStatement.setString(1, nombreLibro);
+            // Establecer el parámetro para el procedimiento almacenado
+            callableStatement.setString(1, nombreLibro);
 
-        try (ResultSet resultado = callableStatement.executeQuery()) {
-            while (resultado.next()) {
-                // Obtener los datos de la consulta
-                int idLibro = resultado.getInt("idLibro");
-                String titulo = resultado.getString("titulo");
-                String autor = resultado.getString("autor"); // Utilizar el alias definido en el procedimiento
-                String genero = resultado.getString("genero"); // Utilizar el alias definido en el procedimiento
-                String editorial = resultado.getString("editorial"); // Utilizar el alias definido en el procedimiento
+            try ( ResultSet resultado = callableStatement.executeQuery()) {
+                while (resultado.next()) {
+                    // Obtener los datos de la consulta
+                    int idLibro = resultado.getInt("idLibro");
+                    String titulo = resultado.getString("titulo");
+                    String autor = resultado.getString("autor"); // Utilizar el alias definido en el procedimiento
+                    String genero = resultado.getString("genero"); // Utilizar el alias definido en el procedimiento
+                    String editorial = resultado.getString("editorial"); // Utilizar el alias definido en el procedimiento
 
-                // Agregar una nueva fila a la tabla con los datos obtenidos
-                modeloTabla.addRow(new Object[]{idLibro, titulo, autor, genero, editorial});
+                    // Agregar una nueva fila a la tabla con los datos obtenidos
+                    modeloTabla.addRow(new Object[]{idLibro, titulo, autor, genero, editorial});
+                }
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "No se encontraron similitudes");
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "No se encontraron similitudes");
+        return tabla;
     }
-
-    return tabla;
-}
-
-
-
 
     // Método para llenar un JComboBox con géneros
     /**
@@ -1414,6 +1411,16 @@ public class Modelo {
             e.printStackTrace();
             // Manejo de excepciones en caso de algún error en la base de datos
         }
+    }
+
+    //Metodo para comprobar si existe  dentro del combobox
+    public static boolean comboContainsItem(JComboBox comboBox, String item) {
+        for (int i = 0; i < comboBox.getItemCount(); i++) {
+            if (comboBox.getItemAt(i).equals(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1584,8 +1591,9 @@ public class Modelo {
     }
 
     //Metodo para actualizar un libro
-    public static void updateLibro(String titulo, String autor, String genero, String editorial, String estado) {
+    public static void updateLibro(int idLibro, String titulo, String autor, String genero, String editorial, String estado) {
         boolean estadoLibro = estado.equalsIgnoreCase("activo");
+
         // Consulta SQL para obtener los IDs de autor, género y editorial utilizando las funciones SQL
         String obtenerIdAutorQuery = "SELECT obtenerIdAutor(?)";
         String obtenerIdGeneroQuery = "SELECT obtenerIdGenero(?)";
@@ -1619,7 +1627,7 @@ public class Modelo {
             }
 
             // Consulta SQL para actualizar los datos del libro
-            String updateQuery = "UPDATE libros SET idAutor = ?, idGenero = ?, idEditorial = ?, estado = ? WHERE titulo = ?";
+            String updateQuery = "UPDATE libros SET idAutor = ?, idGenero = ?, idEditorial = ?, estado = ?, titulo = ? WHERE idLibro = ?";
 
             try ( PreparedStatement updateStatement = conexion.prepareStatement(updateQuery)) {
                 // Establecer los parámetros en la consulta
@@ -1628,6 +1636,7 @@ public class Modelo {
                 updateStatement.setInt(3, idEditorial);
                 updateStatement.setBoolean(4, estadoLibro);
                 updateStatement.setString(5, titulo);
+                updateStatement.setInt(6, idLibro);
 
                 // Ejecutar la actualización
                 updateStatement.executeUpdate();

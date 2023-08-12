@@ -40,6 +40,7 @@ public class Libros_Editar extends javax.swing.JPanel {
         cb_autor.putClientProperty( "JComponent.roundRect", true );
         cb_editorial.putClientProperty( "JComponent.roundRect", true );
         cb_genero.putClientProperty( "JComponent.roundRect", true );
+        cb_estado.putClientProperty( "JComponent.roundRect", true );
         //Hacer los TextField Redondeados
         txt_Bname.putClientProperty( "JComponent.roundRect", true );
         txt_Bid.putClientProperty( "JComponent.roundRect", true );
@@ -127,13 +128,17 @@ public class Libros_Editar extends javax.swing.JPanel {
 
         img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editar-codigo.png"))); // NOI18N
 
+        cb_genero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
+
+        cb_autor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
+
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Editorial:");
 
+        cb_editorial.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "" }));
+
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Estado");
-
-        cb_estado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "ACTIVO", "INACTIVO" }));
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
