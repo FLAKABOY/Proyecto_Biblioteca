@@ -34,7 +34,7 @@ public class Libros_Borrar extends javax.swing.JPanel {
         txt_Bname.putClientProperty( "JComponent.roundRect", true );
         txt_Bid.putClientProperty( "JComponent.roundRect", true );
         //Hacer el boton con bordes redondeados
-        btn_Guardar.putClientProperty( "JButton.buttonType", "roundRect" );
+        btn_Eliminar.putClientProperty( "JButton.buttonType", "roundRect" );
         btn_Bname.putClientProperty( "JButton.buttonType", "roundRect" );
         btn_Bid.putClientProperty( "JButton.buttonType", "roundRect" );
         
@@ -71,7 +71,7 @@ public class Libros_Borrar extends javax.swing.JPanel {
         btn_Bname = new javax.swing.JButton();
         txt_Bid = new javax.swing.JTextField();
         btn_Bid = new javax.swing.JButton();
-        btn_Guardar = new javax.swing.JButton();
+        btn_Eliminar = new javax.swing.JButton();
         img = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_Libros_Borrar = new javax.swing.JTable();
@@ -105,22 +105,22 @@ public class Libros_Borrar extends javax.swing.JPanel {
         btn_Bid.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buscar.png"))); // NOI18N
         btn_Bid.setText("Buscar");
 
-        btn_Guardar.setBackground(new java.awt.Color(0, 1, 248));
-        btn_Guardar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/borrar24px.png"))); // NOI18N
-        btn_Guardar.setText("Borrar");
+        btn_Eliminar.setBackground(new java.awt.Color(0, 1, 248));
+        btn_Eliminar.setForeground(new java.awt.Color(255, 255, 255));
+        btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/borrar24px.png"))); // NOI18N
+        btn_Eliminar.setText("Borrar");
 
         img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/borrar.png"))); // NOI18N
 
         tbl_Libros_Borrar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "ID", "NOMBRE"
+                "BUSCAR LIBRO..."
             }
         ));
         jScrollPane1.setViewportView(tbl_Libros_Borrar);
@@ -148,7 +148,7 @@ public class Libros_Borrar extends javax.swing.JPanel {
                             .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(bgLayout.createSequentialGroup()
                                 .addGap(43, 43, 43)
-                                .addComponent(btn_Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btn_Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
         bgLayout.setVerticalGroup(
@@ -167,7 +167,7 @@ public class Libros_Borrar extends javax.swing.JPanel {
                         .addGap(20, 20, 20)
                         .addComponent(img)
                         .addGap(18, 18, 18)
-                        .addComponent(btn_Guardar))
+                        .addComponent(btn_Eliminar))
                     .addGroup(bgLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -191,7 +191,7 @@ public class Libros_Borrar extends javax.swing.JPanel {
     private javax.swing.JPanel bg;
     public javax.swing.JButton btn_Bid;
     public javax.swing.JButton btn_Bname;
-    public javax.swing.JButton btn_Guardar;
+    public javax.swing.JButton btn_Eliminar;
     private javax.swing.JLabel img;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;

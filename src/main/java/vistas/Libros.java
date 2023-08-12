@@ -6,8 +6,6 @@
  */
 package vistas;
 
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
 
 /**
  *
@@ -20,7 +18,7 @@ public class Libros extends javax.swing.JPanel {
         initComponents();
         IniStyles();
         //Colocar el place holder
-        TextPrompt busq = new TextPrompt("INGRESE EL LIBRO", txt_busqueda);
+        TextPrompt busq = new TextPrompt("INGRESE EL NOMBRE DEL LIBRO", txt_busqueda);
     }
     
     //Metodo que contiene los estilos del LOOK & FEEL

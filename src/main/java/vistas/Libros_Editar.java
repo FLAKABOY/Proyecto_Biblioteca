@@ -23,8 +23,8 @@ public class Libros_Editar extends javax.swing.JPanel {
         //Mando a llamar el metodo del LOOK & FEEL
         IniStyles();
         //colocar place holder
-        TextPrompt bnom = new TextPrompt("Ingrese el nombre", txt_Bname);
-        TextPrompt bid = new TextPrompt("Ingrese el ID", txt_Bid);
+        TextPrompt bnom = new TextPrompt("Ingrese el titulo del libro", txt_Bname);
+        TextPrompt bid = new TextPrompt("Ingrese el ID del libro", txt_Bid);
         
     }
     
@@ -127,14 +127,8 @@ public class Libros_Editar extends javax.swing.JPanel {
 
         img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editar-codigo.png"))); // NOI18N
 
-        cb_genero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        cb_autor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Editorial:");
-
-        cb_editorial.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Estado");

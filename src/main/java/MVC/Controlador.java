@@ -172,7 +172,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosEditar.btn_Bid.addActionListener(this);
 
         //Botones para el panel de Libros Borrar
-        this.librosBorrar.btn_Guardar.addActionListener(this);
+        this.librosBorrar.btn_Eliminar.addActionListener(this);
         this.librosBorrar.btn_Bid.addActionListener(this);
         this.librosBorrar.btn_Bname.addActionListener(this);
 
@@ -236,6 +236,7 @@ public class Controlador implements ActionListener, KeyListener {
 
         //KeyListener para los TextField de el panel de Libros Nuevos
         this.librosNuevos.txt_Titulo.addKeyListener(this);
+        this.librosNuevos.txt_cantLib.addKeyListener(this);
 
         //KeyListener para los TextField de el panel de Libros Editar
         this.librosEditar.txt_Bid.addKeyListener(this);
@@ -318,6 +319,7 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 limpiarTexto();
                 vista.content = vista(librosPanel);
+                librosPanel.tbl_Libros = Modelo.mostrarLibros(librosPanel.tbl_Libros);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -373,7 +375,9 @@ public class Controlador implements ActionListener, KeyListener {
                 //Mandar a llamar el objeto modelo con el metodo de alta de usuario
                 //Validar que los campos contengan datos para insertar los datos
                 if (!usuarioN.txt_Nombre.getText().isEmpty() && !usuarioN.txt_Direct.getText().isEmpty() && !usuarioN.txt_Tel.getText().isEmpty()) {
-                    Modelo.altaUsuario(usuarioN.txt_Nombre.getText(), usuarioN.txt_Direct.getText(), usuarioN.txt_Tel.getText());
+                    Modelo.altaUsuario(usuarioN.txt_Nombre.getText(),
+                            usuarioN.txt_Direct.getText(),
+                            usuarioN.txt_Tel.getText());
                     //Volver a la panel principal de usuarios
                     vista.content = vista(usuariosPanel);
                     //Limpiar campos
@@ -427,7 +431,11 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que los campos no sean vacios
                 if (!usuarioE.txt_Nombre.getText().isEmpty() && !usuarioE.txt_Direct.getText().isEmpty() && !usuarioE.txt_Tel.getText().isEmpty()) {
                     //Llamar al modelo con el metodo de GuardarUsuario
-                    Modelo.updateUser(Integer.parseInt(usuarioE.txt_Bid.getText()), usuarioE.txt_Nombre.getText(), usuarioE.txt_Direct.getText(), usuarioE.txt_Tel.getText(), usuarioE.cb_estado.getSelectedItem().toString());
+                    Modelo.updateUser(Integer.parseInt(usuarioE.txt_Bid.getText()),
+                            usuarioE.txt_Nombre.getText(),
+                            usuarioE.txt_Direct.getText(),
+                            usuarioE.txt_Tel.getText(),
+                            usuarioE.cb_estado.getSelectedItem().toString());
 
                     //Hacemos que la tabla de usuarios se actualice
                     Modelo.mostrarUsers(usuariosPanel.tbl_users);
@@ -479,7 +487,8 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoPanel.btn_Buscar == evento.getSource()) {
             try {
                 //Llamar a modelo con el metodo para hacer la busqueda por ID
-                prestamoPanel.tbl_Prestamos = Modelo.buscarPrestamo(prestamoPanel.tbl_Prestamos, Integer.parseInt(prestamoPanel.txt_busqueda.getText()));
+                prestamoPanel.tbl_Prestamos = Modelo.buscarPrestamo(prestamoPanel.tbl_Prestamos,
+                        Integer.parseInt(prestamoPanel.txt_busqueda.getText()));
             } catch (RuntimeException e) {
 
             }
@@ -503,14 +512,16 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoNuevo.btn_BuscarN == evento.getSource()) {
             try {
                 //Llamar a modelo con el metodo de buscar por Nombre
-                prestamoNuevo.tbl_Prestamo_Nuevo = Modelo.buscarPrestamo(prestamoNuevo.tbl_Prestamo_Nuevo, prestamoNuevo.txt_BuscarN.getText());
+                prestamoNuevo.tbl_Prestamo_Nuevo = Modelo.buscarPrestamo(prestamoNuevo.tbl_Prestamo_Nuevo,
+                        prestamoNuevo.txt_BuscarN.getText());
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         } else if (prestamoNuevo.btn_Buscar == evento.getSource()) {
             try {
                 //Llamar a modelo con el metodo de buscar prestamo por ID
-                prestamoNuevo.tbl_Prestamo_Nuevo = Modelo.buscarPrestamo(prestamoNuevo.tbl_Prestamo_Nuevo, Integer.parseInt(prestamoNuevo.txt_Id.getText()));
+                prestamoNuevo.tbl_Prestamo_Nuevo = Modelo.buscarPrestamo(prestamoNuevo.tbl_Prestamo_Nuevo,
+                        Integer.parseInt(prestamoNuevo.txt_Id.getText()));
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -523,7 +534,8 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que los campos no sean vacios
                 if (!prestamoNuevoDatos.txt_idUser.getText().isEmpty() && !prestamoNuevoDatos.cb_cantlib.getSelectedItem().toString().isEmpty()) {
                     //Convertir los datos entero
-                    Modelo.generarPrestamo(Integer.parseInt(prestamoNuevoDatos.txt_idUser.getText()), Integer.parseInt(prestamoNuevoDatos.cb_cantlib.getSelectedItem().toString()));
+                    Modelo.generarPrestamo(Integer.parseInt(prestamoNuevoDatos.txt_idUser.getText()),
+                            Integer.parseInt(prestamoNuevoDatos.cb_cantlib.getSelectedItem().toString()));
                     //Pasar al panel para Generrar folio y relacionarlo con prestamo
                     vista.content = vista(prestamoNuevoGenerar);
                 } else {
@@ -534,10 +546,12 @@ public class Controlador implements ActionListener, KeyListener {
             }
         } else if (prestamoNuevoDatos.btn_BuscarId == evento.getSource()) {
             //Mandar a llamar el modelo con el metodo de buscar un prestamo con ID
-            Modelo.buscarUser(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos, Integer.parseInt(prestamoNuevoDatos.txt_Id.getText()));
+            Modelo.buscarUser(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos,
+                    Integer.parseInt(prestamoNuevoDatos.txt_Id.getText()));
         } else if (prestamoNuevoDatos.btn_Nom == evento.getSource()) {
             //Mandatr a llamar a modelo con el metodo buscar prestamo
-            Modelo.buscarUser(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos, prestamoNuevoDatos.txt_Nom.getText());
+            Modelo.buscarUser(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos,
+                    prestamoNuevoDatos.txt_Nom.getText());
         }
 
         /*Apatado para la configuracion el panel para Ingresar datos a la tabla folio */
@@ -558,7 +572,8 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoNuevoGenerar.btn_BuscarId == evento.getSource()) {
             try {
                 //Mandar a llamar al metodo para buscar libro por ID
-                prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar = Modelo.buscarLibro(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar, Integer.parseInt(prestamoNuevoGenerar.txt_Id.getText()));
+                prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar = Modelo.buscarLibro(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar,
+                        Integer.parseInt(prestamoNuevoGenerar.txt_Id.getText()));
 
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
@@ -566,7 +581,8 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoNuevoGenerar.btn_Nom == evento.getSource()) {
             try {
                 //Mandar a llamar al metodo de buscar libro por nombre
-                prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar = Modelo.buscarLibro(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar, prestamoNuevoGenerar.txt_Nom.getText());
+                prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar = Modelo.buscarLibro(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar,
+                        prestamoNuevoGenerar.txt_Nom.getText());
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -586,7 +602,8 @@ public class Controlador implements ActionListener, KeyListener {
         if (prestamoNuevoVincular.btn_BuscarId == evento.getSource()) {
             try {
                 //Mandar a llamar al metodo para buscar libro por ID
-                prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular = Modelo.buscarLibro(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular, Integer.parseInt(prestamoNuevoVincular.txt_Id.getText()));
+                prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular = Modelo.buscarLibro(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular,
+                        Integer.parseInt(prestamoNuevoVincular.txt_Id.getText()));
 
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
@@ -594,7 +611,8 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoNuevoVincular.btn_Nom == evento.getSource()) {
             try {
                 //Mandar a llamar al metodo de buscar libro por nombre
-                prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular = Modelo.buscarLibro(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular, prestamoNuevoVincular.txt_Nom.getText());
+                prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular = Modelo.buscarLibro(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular,
+                        prestamoNuevoVincular.txt_Nom.getText());
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -602,7 +620,8 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 //Validar que los campos no esten vacios
                 if (!prestamoNuevoVincular.txt_idPrestamo.getText().isEmpty() && !prestamoNuevoVincular.txt_Id.getText().isEmpty()) {
-                    Modelo.generarFolio(Integer.parseInt(prestamoNuevoVincular.txt_idPrestamo.getText()), Integer.parseInt(prestamoNuevoVincular.txt_Id.getText()));
+                    Modelo.generarFolio(Integer.parseInt(prestamoNuevoVincular.txt_idPrestamo.getText()),
+                            Integer.parseInt(prestamoNuevoVincular.txt_Id.getText()));
                 } else {
                     JOptionPane.showMessageDialog(null, "Favor de ingresar el ID del prestamo y el ID del libro");
                 }
@@ -635,14 +654,16 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoEliminar.btn_BuscarId == evento.getSource()) {
             try {
                 //Llamada a Modelo con el metodo de buscar prestamo por ID del usuario
-                prestamoEliminar.tbl_Prestamos_Eliminar = Modelo.buscarPrestamoIdUsuario(prestamoEliminar.tbl_Prestamos_Eliminar, Integer.parseInt(prestamoEliminar.txt_Id.getText()));
+                prestamoEliminar.tbl_Prestamos_Eliminar = Modelo.buscarPrestamoIdUsuario(prestamoEliminar.tbl_Prestamos_Eliminar,
+                        Integer.parseInt(prestamoEliminar.txt_Id.getText()));
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         } else if (prestamoEliminar.btn_Id2 == evento.getSource()) {
             try {
                 //Llamada a Modelo con el metodo de buscar prestamo por ID del prestamo
-                prestamoEliminar.tbl_Prestamos_Eliminar = Modelo.buscarPrestamo(prestamoEliminar.tbl_Prestamos_Eliminar, Integer.parseInt(prestamoEliminar.txt_Id_Prestamo.getText()));
+                prestamoEliminar.tbl_Prestamos_Eliminar = Modelo.buscarPrestamo(prestamoEliminar.tbl_Prestamos_Eliminar,
+                        Integer.parseInt(prestamoEliminar.txt_Id_Prestamo.getText()));
 
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
@@ -662,7 +683,9 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 if (!devolucionesPanel.txt_busqueda.getText().isEmpty()) {
                     //Llamar al modelo con el metodo de buscar folios vinculados al ID del prestamo
-                    devolucionesPanel.tbl_Devoluciones = Modelo.buscarFolios(devolucionesPanel.tbl_Devoluciones, Integer.parseInt(devolucionesPanel.txt_busqueda.getText()), devolucionesEditar.cbx_Libro);
+                    devolucionesPanel.tbl_Devoluciones = Modelo.buscarFolios(devolucionesPanel.tbl_Devoluciones,
+                            Integer.parseInt(devolucionesPanel.txt_busqueda.getText()),
+                            devolucionesEditar.cbx_Libro);
                 } else {
                     Modelo.mostrarFolios(devolucionesPanel.tbl_Devoluciones);
                 }
@@ -679,11 +702,15 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que los campos necesarios para actualizar no sean vacios
                 if (!devolucionesEditar.cbx_Libro.getSelectedItem().toString().isEmpty() && (devolucionesEditar.rb_Entregado.isSelected() || devolucionesEditar.rb_Pendiente.isSelected())) {
                     if (devolucionesEditar.rb_Entregado.isSelected()) {
-                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()), devolucionesEditar.cbx_Libro.getSelectedItem().toString(), false);
+                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
+                                devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
+                                false);
                         
                     } else if (devolucionesEditar.rb_Pendiente.isSelected()) {
                         // Acciones a realizar cuando el botón rb_Pendiente está seleccionado
-                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()), devolucionesEditar.cbx_Libro.getSelectedItem().toString(), true);
+                        Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
+                                devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
+                                true);
                         
                     }
                 }
@@ -697,14 +724,20 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (devolucionesEditar.btn_BuscarNombreLibro == evento.getSource()) {
             try {
                 //Llamar a modelo para buscar en la tabla folio por nombre del libro
-                devolucionesEditar.tbl_Devoluciones_Editar = Modelo.buscarFolio(devolucionesEditar.tbl_Devoluciones_Editar, devolucionesEditar.txt_Nombrelibro.getText(), devolucionesEditar.cbx_Libro);
+                devolucionesEditar.tbl_Devoluciones_Editar = Modelo.buscarFolio(
+                        devolucionesEditar.tbl_Devoluciones_Editar,
+                        devolucionesEditar.txt_Nombrelibro.getText(),
+                        devolucionesEditar.cbx_Libro);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         } else if (devolucionesEditar.btn_BuscarFolio == evento.getSource()) {
             try {
                 //Llamar a modelo con el metodo de buscar folio por Id de prestamo
-                devolucionesEditar.tbl_Devoluciones_Editar = Modelo.buscarFolios(devolucionesEditar.tbl_Devoluciones_Editar, Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()), devolucionesEditar.cbx_Libro);
+                devolucionesEditar.tbl_Devoluciones_Editar = Modelo.buscarFolios(
+                        devolucionesEditar.tbl_Devoluciones_Editar,
+                        Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
+                        devolucionesEditar.cbx_Libro);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -716,6 +749,10 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 //Mandar a llamar al panel de libro nuevo
                 vista.content = vista(librosNuevos);
+                //Llenar los Jcombo box de el panel con lo registrado en la BD
+                Modelo.llenarComboBoxGeneros(librosNuevos.cb_genero);
+                Modelo.llenarComboBoxAutores(librosNuevos.cb_autor);
+                Modelo.llenarComboBoxEditoriales(librosNuevos.cb_editorial);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -737,13 +774,95 @@ public class Controlador implements ActionListener, KeyListener {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
+        else if(librosPanel.btn_Buscar == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por el nombre
+                librosPanel.tbl_Libros = Modelo.buscarLibro(librosPanel.tbl_Libros,
+                        librosPanel.txt_busqueda.getText());       
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para el panel de Libros_Nuevos
+        if(librosNuevos.btn_Guardar == evento.getSource()){
+            try{
+                if(!librosNuevos.txt_Titulo.getText().isEmpty() && !librosNuevos.txt_cantLib.getText().isEmpty()){
+                    //Mandar a llamar el metodo Insertar el nuevo libro
+                    Modelo.altaLibro(librosNuevos.txt_Titulo.getText(),
+                            librosNuevos.cb_autor.getSelectedItem().toString(),
+                            librosNuevos.cb_genero.getSelectedItem().toString(),
+                            librosNuevos.cb_editorial.getSelectedItem().toString(),
+                            Integer.parseInt(librosNuevos.txt_cantLib.getText()));
+                    
+                    //Volver actualizar la tabla del panel de libros con el Nuevo regirto generado
+                    librosPanel.tbl_Libros = Modelo.mostrarLibros(librosPanel.tbl_Libros);
+                    //Limpiar todos los campos utilizados
+                    limpiarTexto();   
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "FAVOR DE LLENAR LOS CAMPOS CORRESPONDIENTES");
+                }
+                
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para el panel de Libros_Editar
+        if(librosEditar.btn_Bid == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por ID
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(librosEditar.btn_Bname == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por el nombre
+                
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(librosEditar.btn_Guardar == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por el nombre
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para el panel de Libros_Borrar
+        if(librosBorrar.btn_Bid == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por ID
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(librosBorrar.btn_Bname == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de buscar el libro por el nombre
+                
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(librosBorrar.btn_Eliminar == evento.getSource()){
+            try{
+                //Mandar a llamar el metodo de eliminacion de un libro
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
 
         /*Apatado para la configuracion del panel de Reportes*/
         //Hacer los botones de el panel de Reportes\\
     }//Llave del metodo actionPerformed
 
-    /*Sobreescribir todos los metodos los metodos abtra<.l<.os de la interface
-    KeyListener de los cuales solo usaremos keyTyped.36*/
+    /*Sobreescribir todos los metodos los metodos abtractosos de la interface
+    KeyListener de los cuales solo usaremos keyTyped*/
     @Override
     public void keyTyped(KeyEvent evento) {
         //Variable que se utiliza para las validaciones
@@ -993,6 +1112,13 @@ public class Controlador implements ActionListener, KeyListener {
                 evento.consume();
             }
         }
+        
+        //Caja de texto de para la cantidad de libros
+        if(librosNuevos.txt_cantLib == evento.getSource()){
+            if (c < '0' || c > '9') {
+                evento.consume();
+            }
+        }
 
         //Panel de Libros Editar\\
         //Caja de texto que busca el libro por su ID
@@ -1110,7 +1236,16 @@ public class Controlador implements ActionListener, KeyListener {
 
         librosBorrar.txt_Bid.setText("");
         librosBorrar.txt_Bname.setText("");
-    }
+        
+        //Limpiar los jCoboBox
+        librosNuevos.cb_autor.removeAllItems();
+        librosNuevos.cb_editorial.removeAllItems();
+        librosNuevos.cb_genero.removeAllItems();
+        
+         librosEditar.cb_autor.removeAllItems();
+         librosEditar.cb_editorial.removeAllItems();
+         librosEditar.cb_genero.removeAllItems();
+    }//Fin del metodo de limpiar los campos
 
     //Metodo para llenar los campos de editar usuario y sea mas facil la modificacion
     public void colocarDatosUserId(Usuario usuario) {
