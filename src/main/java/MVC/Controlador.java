@@ -10,6 +10,7 @@
  */
 package MVC;
 
+import MVC.Modelo.Libro;
 import MVC.Modelo.Usuario;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -167,7 +168,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosNuevos.btn_Guardar.addActionListener(this);
 
         //Botones para el panel de Libros Editar
-        this.librosEditar.btn_Guardar.addActionListener(this);
+        this.librosEditar.btn_Update.addActionListener(this);
         this.librosEditar.btn_Bname.addActionListener(this);
         this.librosEditar.btn_Bid.addActionListener(this);
 
@@ -705,13 +706,13 @@ public class Controlador implements ActionListener, KeyListener {
                         Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
                                 devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
                                 false);
-                        
+
                     } else if (devolucionesEditar.rb_Pendiente.isSelected()) {
                         // Acciones a realizar cuando el botón rb_Pendiente está seleccionado
                         Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
                                 devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
                                 true);
-                        
+
                     }
                 }
                 //Llamar a modelo con el metodo de actualizar el estado de un folio
@@ -773,86 +774,96 @@ public class Controlador implements ActionListener, KeyListener {
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(librosPanel.btn_Buscar == evento.getSource()){
-            try{
+        } else if (librosPanel.btn_Buscar == evento.getSource()) {
+            try {
                 //Mandar a llamar el metodo de buscar el libro por el nombre
                 librosPanel.tbl_Libros = Modelo.buscarLibro(librosPanel.tbl_Libros,
-                        librosPanel.txt_busqueda.getText());       
-            }catch(RuntimeException e){
+                        librosPanel.txt_busqueda.getText());
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado para el panel de Libros_Nuevos
-        if(librosNuevos.btn_Guardar == evento.getSource()){
-            try{
-                if(!librosNuevos.txt_Titulo.getText().isEmpty() && !librosNuevos.txt_cantLib.getText().isEmpty()){
+        if (librosNuevos.btn_Guardar == evento.getSource()) {
+            try {
+                if (!librosNuevos.txt_Titulo.getText().isEmpty() && !librosNuevos.txt_cantLib.getText().isEmpty()) {
                     //Mandar a llamar el metodo Insertar el nuevo libro
                     Modelo.altaLibro(librosNuevos.txt_Titulo.getText(),
                             librosNuevos.cb_autor.getSelectedItem().toString(),
                             librosNuevos.cb_genero.getSelectedItem().toString(),
                             librosNuevos.cb_editorial.getSelectedItem().toString(),
                             Integer.parseInt(librosNuevos.txt_cantLib.getText()));
-                    
+
                     //Volver actualizar la tabla del panel de libros con el Nuevo regirto generado
                     librosPanel.tbl_Libros = Modelo.mostrarLibros(librosPanel.tbl_Libros);
                     //Limpiar todos los campos utilizados
-                    limpiarTexto();   
-                }
-                else{
+                    limpiarTexto();
+                    //Volver al panel principal de libros
+                    vista.content = vista(librosPanel);
+                } else {
                     JOptionPane.showMessageDialog(null, "FAVOR DE LLENAR LOS CAMPOS CORRESPONDIENTES");
                 }
-                
-            }catch(RuntimeException e){
+
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado para el panel de Libros_Editar
-        if(librosEditar.btn_Bid == evento.getSource()){
-            try{
+        if (librosEditar.btn_Bid == evento.getSource()) {
+            try {
                 //Mandar a llamar el metodo de buscar el libro por ID
-            }catch(RuntimeException e){
+                colocarDatosLibroId(new Libro());
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(librosEditar.btn_Bname == evento.getSource()){
-            try{
+        } else if (librosEditar.btn_Bname == evento.getSource()) {
+            try {
                 //Mandar a llamar el metodo de buscar el libro por el nombre
-                
-            }catch(RuntimeException e){
+                colocarDatosLibroTitulo(new Libro());
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        } else if (librosEditar.btn_Update == evento.getSource()) {
+            try {
+                //Mandar a llamar el metodo de actualizar los datos del libro
+                Modelo.updateLibro(librosEditar.txt_Titulo.getText(),
+                        librosEditar.cb_autor.getSelectedItem().toString(),
+                        librosEditar.cb_genero.getSelectedItem().toString(),
+                        librosEditar.cb_editorial.getSelectedItem().toString(),
+                        librosEditar.cb_estado.getSelectedItem().toString());
+
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        else if(librosEditar.btn_Guardar == evento.getSource()){
-            try{
-                //Mandar a llamar el metodo de buscar el libro por el nombre
-            }catch(RuntimeException e){
-                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
-            }
-        }
-        
+
         //Apartado para el panel de Libros_Borrar
-        if(librosBorrar.btn_Bid == evento.getSource()){
-            try{
+        if (librosBorrar.btn_Bid == evento.getSource()) {
+            try {
                 //Mandar a llamar el metodo de buscar el libro por ID
-            }catch(RuntimeException e){
+                librosBorrar.tbl_Libros_Borrar = Modelo.buscarLibro(librosBorrar.tbl_Libros_Borrar, Integer.parseInt(librosBorrar.txt_Bid.getText()));
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(librosBorrar.btn_Bname == evento.getSource()){
-            try{
+        } else if (librosBorrar.btn_Bname == evento.getSource()) {
+            try {
                 //Mandar a llamar el metodo de buscar el libro por el nombre
-                
-            }catch(RuntimeException e){
+                librosBorrar.tbl_Libros_Borrar = Modelo.buscarLibro(librosBorrar.tbl_Libros_Borrar, librosBorrar.txt_Bname.getText());
+
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(librosBorrar.btn_Eliminar == evento.getSource()){
-            try{
-                //Mandar a llamar el metodo de eliminacion de un libro
-            }catch(RuntimeException e){
+        } else if (librosBorrar.btn_Eliminar == evento.getSource()) {
+            try {
+                //Mandar a llamar el metodo de eliminacion logica de un libro
+                if (!librosBorrar.txt_Bid.getText().isEmpty()) {
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "FAVOR DE INGRESAR EL ID DEL LIBRO");
+                }
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
@@ -1112,9 +1123,9 @@ public class Controlador implements ActionListener, KeyListener {
                 evento.consume();
             }
         }
-        
+
         //Caja de texto de para la cantidad de libros
-        if(librosNuevos.txt_cantLib == evento.getSource()){
+        if (librosNuevos.txt_cantLib == evento.getSource()) {
             if (c < '0' || c > '9') {
                 evento.consume();
             }
@@ -1236,15 +1247,15 @@ public class Controlador implements ActionListener, KeyListener {
 
         librosBorrar.txt_Bid.setText("");
         librosBorrar.txt_Bname.setText("");
-        
+
         //Limpiar los jCoboBox
         librosNuevos.cb_autor.removeAllItems();
         librosNuevos.cb_editorial.removeAllItems();
         librosNuevos.cb_genero.removeAllItems();
-        
-         librosEditar.cb_autor.removeAllItems();
-         librosEditar.cb_editorial.removeAllItems();
-         librosEditar.cb_genero.removeAllItems();
+
+        librosEditar.cb_autor.removeAllItems();
+        librosEditar.cb_editorial.removeAllItems();
+        librosEditar.cb_genero.removeAllItems();
     }//Fin del metodo de limpiar los campos
 
     //Metodo para llenar los campos de editar usuario y sea mas facil la modificacion
@@ -1284,6 +1295,45 @@ public class Controlador implements ActionListener, KeyListener {
             usuarioE.cb_estado.insertItemAt("INACTIVO", 0);
             usuarioE.cb_estado.insertItemAt("ACTIVO", 1);
             usuarioE.cb_estado.setSelectedItem("INACTIVO");
+        }
+    }
+
+    //Metodo para llenar los campos de editar Libro y sea mas facil la modificacion
+    public void colocarDatosLibroId(Libro libro) {
+        libro = Modelo.datosLibro(Integer.parseInt(librosEditar.txt_Bid.getText()));
+
+        //Colocar datos de del libro
+        librosEditar.cb_genero.insertItemAt(libro.getGenero(), 0);
+        librosEditar.cb_autor.insertItemAt(libro.getAutor(), 0);
+        librosEditar.cb_editorial.insertItemAt(libro.getEditorial(), 0);
+        //En caso de que se cumpla una condicion se llenara el comboBox
+        if (libro.getEstado()) {
+            librosEditar.cb_estado.insertItemAt("ACTIVO", 0);
+            librosEditar.cb_estado.insertItemAt("INACTIVO", 1);
+            librosEditar.cb_estado.setSelectedItem("ACTIVO");
+        } else {
+            librosEditar.cb_estado.insertItemAt("INACTIVO", 0);
+            librosEditar.cb_estado.insertItemAt("ACTIVO", 1);
+            librosEditar.cb_estado.setSelectedItem("INACTIVO");
+        }
+    }
+
+    public void colocarDatosLibroTitulo(Libro libro) {
+        libro = Modelo.datosLibros(librosEditar.txt_Bname.getText());
+
+        //Colocar datos de del libro
+        librosEditar.cb_genero.insertItemAt(libro.getGenero(), 0);
+        librosEditar.cb_autor.insertItemAt(libro.getAutor(), 0);
+        librosEditar.cb_editorial.insertItemAt(libro.getEditorial(), 0);
+        //En caso de que se cumpla una condicion se llenara el comboBox
+        if (libro.getEstado()) {
+            librosEditar.cb_estado.insertItemAt("ACTIVO", 0);
+            librosEditar.cb_estado.insertItemAt("INACTIVO", 1);
+            librosEditar.cb_estado.setSelectedItem("ACTIVO");
+        } else {
+            librosEditar.cb_estado.insertItemAt("INACTIVO", 0);
+            librosEditar.cb_estado.insertItemAt("ACTIVO", 1);
+            librosEditar.cb_estado.setSelectedItem("INACTIVO");
         }
     }
 

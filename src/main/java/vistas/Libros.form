@@ -148,8 +148,8 @@
                   <Table columnCount="4" rowCount="4">
                     <Column editable="true" title="ID" type="java.lang.Object"/>
                     <Column editable="true" title="TITULO" type="java.lang.Object"/>
-                    <Column editable="true" title="IDIOMA" type="java.lang.Object"/>
-                    <Column editable="true" title="ID AUTOR" type="java.lang.Object"/>
+                    <Column editable="true" title="AUTOR" type="java.lang.Object"/>
+                    <Column editable="true" title="EDITORIAL" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

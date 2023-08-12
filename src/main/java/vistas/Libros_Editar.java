@@ -45,7 +45,7 @@ public class Libros_Editar extends javax.swing.JPanel {
         txt_Bid.putClientProperty( "JComponent.roundRect", true );
         txt_Titulo.putClientProperty( "JComponent.roundRect", true );
         //Hacer el boton con bordes redondeados
-        btn_Guardar.putClientProperty( "JButton.buttonType", "roundRect" );
+        btn_Update.putClientProperty( "JButton.buttonType", "roundRect" );
         btn_Bname.putClientProperty( "JButton.buttonType", "roundRect" );
         btn_Bid.putClientProperty( "JButton.buttonType", "roundRect" );
         
@@ -71,14 +71,14 @@ public class Libros_Editar extends javax.swing.JPanel {
         txt_Titulo = new javax.swing.JTextField();
         lbl_Idioma = new javax.swing.JLabel();
         lbl_Autor = new javax.swing.JLabel();
-        btn_Guardar = new javax.swing.JButton();
+        btn_Update = new javax.swing.JButton();
         img = new javax.swing.JLabel();
         cb_genero = new javax.swing.JComboBox<>();
         cb_autor = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         cb_editorial = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cb_estado = new javax.swing.JComboBox<>();
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -120,10 +120,10 @@ public class Libros_Editar extends javax.swing.JPanel {
         lbl_Autor.setForeground(new java.awt.Color(0, 0, 0));
         lbl_Autor.setText("Autor:");
 
-        btn_Guardar.setBackground(new java.awt.Color(0, 1, 248));
-        btn_Guardar.setForeground(new java.awt.Color(255, 255, 255));
-        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/salvar.png"))); // NOI18N
-        btn_Guardar.setText("GUARDAR");
+        btn_Update.setBackground(new java.awt.Color(0, 1, 248));
+        btn_Update.setForeground(new java.awt.Color(255, 255, 255));
+        btn_Update.setIcon(new javax.swing.ImageIcon(getClass().getResource("/salvar.png"))); // NOI18N
+        btn_Update.setText("GUARDAR");
 
         img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editar-codigo.png"))); // NOI18N
 
@@ -133,7 +133,7 @@ public class Libros_Editar extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Estado");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "ACTIVO", "INACTIVO" }));
+        cb_estado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "ACTIVO", "INACTIVO" }));
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
@@ -173,7 +173,7 @@ public class Libros_Editar extends javax.swing.JPanel {
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
                                         .addGap(12, 12, 12)
                                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(cb_estado, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(139, 139, 139))
                             .addGroup(bgLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
@@ -184,7 +184,7 @@ public class Libros_Editar extends javax.swing.JPanel {
                                 .addComponent(img)
                                 .addGap(19, 19, 19))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
-                                .addComponent(btn_Guardar, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_Update, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(100, 100, 100)))))
                 .addGap(81, 81, 81))
         );
@@ -204,7 +204,7 @@ public class Libros_Editar extends javax.swing.JPanel {
                         .addGap(20, 20, 20)
                         .addComponent(img)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_Guardar))
+                        .addComponent(btn_Update))
                     .addGroup(bgLayout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addComponent(lbl_Tit)
@@ -225,7 +225,7 @@ public class Libros_Editar extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cb_estado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -246,12 +246,12 @@ public class Libros_Editar extends javax.swing.JPanel {
     private javax.swing.JPanel bg;
     public javax.swing.JButton btn_Bid;
     public javax.swing.JButton btn_Bname;
-    public javax.swing.JButton btn_Guardar;
+    public javax.swing.JButton btn_Update;
     public javax.swing.JComboBox<String> cb_autor;
     public javax.swing.JComboBox<String> cb_editorial;
+    public javax.swing.JComboBox<String> cb_estado;
     public javax.swing.JComboBox<String> cb_genero;
     private javax.swing.JLabel img;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel3;

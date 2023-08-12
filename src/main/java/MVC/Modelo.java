@@ -1302,38 +1302,42 @@ public class Modelo {
      * libro
      */
     public static JTable buscarLibro(JTable tabla, String nombreLibro) {
-        // Definir el nombre del procedimiento almacenado a llamar
-        String callProcedure = "CALL BuscarLibrosPorNombre(?)";
+    // Definir el nombre del procedimiento almacenado a llamar
+    String callProcedure = "{CALL BuscarLibrosPorNombre(?)}";
 
-        // Obtener el modelo de la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-        modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+    // Obtener el modelo de la tabla
+    DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+    modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
 
-        try ( Connection conexion = Modelo.conectar();  CallableStatement callableStatement = conexion.prepareCall(callProcedure)) {
+    try (Connection conexion = Modelo.conectar(); CallableStatement callableStatement = conexion.prepareCall(callProcedure)) {
 
-            // Establecer el parámetro para el procedimiento almacenado
-            callableStatement.setString(1, nombreLibro);
+        // Establecer el parámetro para el procedimiento almacenado
+        callableStatement.setString(1, nombreLibro);
 
-            try ( ResultSet resultado = callableStatement.executeQuery()) {
-                while (resultado.next()) {
-                    // Obtener los datos de la consulta
-                    String titulo = resultado.getString("titulo");
-                    String autor = resultado.getString("autor");
-                    String genero = resultado.getString("genero");
-                    String editorial = resultado.getString("editorial");
+        try (ResultSet resultado = callableStatement.executeQuery()) {
+            while (resultado.next()) {
+                // Obtener los datos de la consulta
+                int idLibro = resultado.getInt("idLibro");
+                String titulo = resultado.getString("titulo");
+                String autor = resultado.getString("autor"); // Utilizar el alias definido en el procedimiento
+                String genero = resultado.getString("genero"); // Utilizar el alias definido en el procedimiento
+                String editorial = resultado.getString("editorial"); // Utilizar el alias definido en el procedimiento
 
-                    // Agregar una nueva fila a la tabla con los datos obtenidos
-                    modeloTabla.addRow(new Object[]{titulo, autor, genero, editorial});
-                }
+                // Agregar una nueva fila a la tabla con los datos obtenidos
+                modeloTabla.addRow(new Object[]{idLibro, titulo, autor, genero, editorial});
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        // Retornar la tabla con los resultados
-        return tabla;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "No se encontraron similitudes");
     }
+
+    return tabla;
+}
+
+
+
 
     // Método para llenar un JComboBox con géneros
     /**
@@ -1455,80 +1459,68 @@ public class Modelo {
 
     //Datos para llenar los campos mediante el id de del libro
     public static Libro datosLibro(int idLibro) {
-        // Consulta SQL para obtener los datos del libro por su ID
-        String selectQuery = "SELECT l.titulo, a.nombre AS autor, g.genero, e.editorial, l.cantDisp, l.estado "
-                + "FROM libros l "
-                + "INNER JOIN autores a ON l.idAutor = a.idAutor "
-                + "INNER JOIN generos g ON l.idGenero = g.idGenero "
-                + "INNER JOIN editoriales e ON l.idEditorial = e.idEditorial "
-                + "WHERE l.idLibro = ?";
+        // Consulta SQL para obtener los datos del libro por ID
+        String consulta = "SELECT idLibro, titulo, idAutor, idGenero, idEditorial, cantDisp, estado FROM libros WHERE idLibro = ?";
 
-        try ( Connection connection = Modelo.conectar();  PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
-
+        try ( Connection conexion = Modelo.conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
             // Establecer el parámetro (ID del libro) en la consulta
-            selectStatement.setInt(1, idLibro);
+            preparedStatement.setInt(1, idLibro);
 
-            try ( ResultSet resultSet = selectStatement.executeQuery()) {
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Obtener los datos del resultado
+                    int id = resultSet.getInt("idLibro");
                     String titulo = resultSet.getString("titulo");
-                    String autor = resultSet.getString("autor");
-                    String genero = resultSet.getString("genero");
-                    String editorial = resultSet.getString("editorial");
+                    int idAutor = resultSet.getInt("idAutor");
+                    int idGenero = resultSet.getInt("idGenero");
+                    int idEditorial = resultSet.getInt("idEditorial");
                     int cantDisp = resultSet.getInt("cantDisp");
-                    String estado = resultSet.getString("estado");
+                    boolean estado = resultSet.getBoolean("estado");
 
-                    // Crear un objeto de la subclase Libro con los datos obtenidos
-                    Libro libro = new Libro(idLibro, autor, genero, editorial, titulo, cantDisp, estado);
-
-                    // Retornar el objeto Libro
+                    Libro libro = new Libro(id,
+                            obtenerNombreAutorPorID(idAutor),
+                            obtenerNombreGeneroPorID(idGenero),
+                            obtenerNombreEditorialPorID(idEditorial), titulo, cantDisp, estado);
                     return libro;
                 }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-            // Manejo de excepciones en caso de algún error en la base de datos
         }
 
-        return null; // Si no se encuentra el libro, retornar null
+        return null; // Si no se encontró ningún libro con el ID proporcionado
     }
 
     public static Libro datosLibros(String tituloLibro) {
-        Libro libroEncontrado = null;
+        // Consulta SQL para obtener los datos del libro por título
+        String consulta = "SELECT idLibro, titulo, idAutor, idGenero, idEditorial, cantDisp, estado FROM libros WHERE titulo LIKE ? LIMIT 1";
 
-        // Realizar la consulta SQL para obtener los libros por título
-        String consulta = "SELECT * FROM libros WHERE titulo LIKE ? ORDER BY titulo";
-
-        try ( Connection conexion = conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
-            // Establecer el parámetro (título de libro) en la consulta
+        try ( Connection conexion = Modelo.conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
+            // Establecer el parámetro (título del libro) en la consulta
             preparedStatement.setString(1, "%" + tituloLibro + "%");
 
-            try ( ResultSet resultado = preparedStatement.executeQuery()) {
-                if (resultado.next()) {
-                    // Obtener los valores de las columnas
-                    int idLibro = resultado.getInt("idLibro");
-                    int idAutor = resultado.getInt("idAutor");
-                    int idGenero = resultado.getInt("idGenero");
-                    int idEditorial = resultado.getInt("idEditorial");
-                    int cantDisp = resultado.getInt("cantDisp");
-                    String estado = resultado.getString("estado");
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("idLibro");
+                    String titulo = resultSet.getString("titulo");
+                    int idAutor = resultSet.getInt("idAutor");
+                    int idGenero = resultSet.getInt("idGenero");
+                    int idEditorial = resultSet.getInt("idEditorial");
+                    int cantDisp = resultSet.getInt("cantDisp");
+                    boolean estado = resultSet.getBoolean("estado");
 
-                    // Obtener los nombres de las llaves foraneas
-                    String autor = obtenerNombreAutorPorID(idAutor);
-                    String genero = obtenerNombreGeneroPorID(idGenero);
-                    String editorial = obtenerNombreEditorialPorID(idEditorial);
-
-                    // Crear un objeto de la subclase Libro con los datos obtenidos
-                    libroEncontrado = new Libro(idLibro, autor, genero, editorial, tituloLibro, cantDisp, estado);
+                    Libro libro = new Libro(id,
+                            obtenerNombreAutorPorID(idAutor),
+                            obtenerNombreGeneroPorID(idGenero),
+                            obtenerNombreEditorialPorID(idEditorial),
+                            titulo, cantDisp, estado);
+                    return libro;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // Retornar el primer libro encontrado con la similitud más alta
-        return libroEncontrado;
+        return null; // Si no se encontró ningún libro con el título proporcionado
     }
 
     public static String obtenerNombreAutorPorID(int idAutor) {
@@ -1591,8 +1583,94 @@ public class Modelo {
         return nombreEditorial;
     }
 
-    public static void updateLibro(String titulo, String autor, String genero, String editorial, boolean estado) {
+    //Metodo para actualizar un libro
+    public static void updateLibro(String titulo, String autor, String genero, String editorial, String estado) {
+        boolean estadoLibro = estado.equalsIgnoreCase("activo");
+        // Consulta SQL para obtener los IDs de autor, género y editorial utilizando las funciones SQL
+        String obtenerIdAutorQuery = "SELECT obtenerIdAutor(?)";
+        String obtenerIdGeneroQuery = "SELECT obtenerIdGenero(?)";
+        String obtenerIdEditorialQuery = "SELECT obtenerIdEditorial(?)";
 
+        int idAutor = 0;
+        int idGenero = 0;
+        int idEditorial = 0;
+
+        try ( Connection conexion = Modelo.conectar();  PreparedStatement obtenerIdAutorStatement = conexion.prepareStatement(obtenerIdAutorQuery);  PreparedStatement obtenerIdGeneroStatement = conexion.prepareStatement(obtenerIdGeneroQuery);  PreparedStatement obtenerIdEditorialStatement = conexion.prepareStatement(obtenerIdEditorialQuery)) {
+
+            // Establecer el parámetro (nombre) en las consultas
+            obtenerIdAutorStatement.setString(1, autor);
+            obtenerIdGeneroStatement.setString(1, genero);
+            obtenerIdEditorialStatement.setString(1, editorial);
+
+            // Ejecutar las consultas y obtener los IDs correspondientes
+            try ( ResultSet obtenerIdAutorResult = obtenerIdAutorStatement.executeQuery();  ResultSet obtenerIdGeneroResult = obtenerIdGeneroStatement.executeQuery();  ResultSet obtenerIdEditorialResult = obtenerIdEditorialStatement.executeQuery()) {
+
+                if (obtenerIdAutorResult.next()) {
+                    idAutor = obtenerIdAutorResult.getInt(1);
+                }
+
+                if (obtenerIdGeneroResult.next()) {
+                    idGenero = obtenerIdGeneroResult.getInt(1);
+                }
+
+                if (obtenerIdEditorialResult.next()) {
+                    idEditorial = obtenerIdEditorialResult.getInt(1);
+                }
+            }
+
+            // Consulta SQL para actualizar los datos del libro
+            String updateQuery = "UPDATE libros SET idAutor = ?, idGenero = ?, idEditorial = ?, estado = ? WHERE titulo = ?";
+
+            try ( PreparedStatement updateStatement = conexion.prepareStatement(updateQuery)) {
+                // Establecer los parámetros en la consulta
+                updateStatement.setInt(1, idAutor);
+                updateStatement.setInt(2, idGenero);
+                updateStatement.setInt(3, idEditorial);
+                updateStatement.setBoolean(4, estadoLibro);
+                updateStatement.setString(5, titulo);
+
+                // Ejecutar la actualización
+                updateStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Metodo para la eliminacion logica de un libro
+    public static void logicDeleteLibro(int idLibro) {
+        // Definir las consultas SQL necesarias
+        String obtenerEstadoQuery = "SELECT estado FROM libros WHERE idLibro = ?";
+        String updateEstadoQuery = "UPDATE libros SET estado = ? WHERE idLibro = ?";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement obtenerEstadoStatement = connection.prepareStatement(obtenerEstadoQuery);  PreparedStatement updateEstadoStatement = connection.prepareStatement(updateEstadoQuery)) {
+
+            // Establecer el parámetro (id del libro) en la consulta para obtener el estado actual
+            obtenerEstadoStatement.setInt(1, idLibro);
+
+            try ( ResultSet obtenerEstadoResult = obtenerEstadoStatement.executeQuery()) {
+                if (obtenerEstadoResult.next()) {
+                    // Obtener el estado actual del libro
+                    boolean estadoActual = obtenerEstadoResult.getBoolean("estado");
+
+                    if (!estadoActual) {
+                        // Si el estado es inactivo, mostrar un mensaje informativo
+                        JOptionPane.showMessageDialog(null, "El libro ya está inactivo.");
+                    } else {
+                        // Si el estado es activo, proceder a cambiarlo a inactivo (false)
+                        updateEstadoStatement.setBoolean(1, false); // Nuevo estado: inactivo
+                        updateEstadoStatement.setInt(2, idLibro); // Para el libro con el id dado
+                        updateEstadoStatement.executeUpdate(); // Ejecutar la actualización en la base de datos
+
+                        // Mostrar mensaje de éxito
+                        JOptionPane.showMessageDialog(null, "El libro se ha marcado como inactivo exitosamente.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
     }
 
     //Subclase para los usuarios
@@ -1669,17 +1747,21 @@ public class Modelo {
         private static String editorial;
         private static String titulo;
         private static int cantDisp;
-        private static String estado;
+        private static boolean estado;
 
         // Constructor
-        public Libro(int id, String autor, String genero, String editorial, String titulo, int cantDisp, String estado) {
+        public Libro() {
+
+        }
+
+        public Libro(int id, String autor, String genero, String editorial, String titulo, int cantDisp, boolean estado) {
             Libro.id = id;
             Libro.autor = autor;
             Libro.genero = genero;
             Libro.editorial = editorial;
             Libro.titulo = titulo;
             Libro.cantDisp = cantDisp;
-            Libro.estado = estado;
+            Libro.estado = true;
         }
 
         // Getters y setters
@@ -1731,11 +1813,11 @@ public class Modelo {
             Libro.cantDisp = cantDisp;
         }
 
-        public static String getEstado() {
+        public static boolean getEstado() {
             return estado;
         }
 
-        public static void setEstado(String estado) {
+        public static void setEstado(boolean estado) {
             Libro.estado = estado;
         }
 

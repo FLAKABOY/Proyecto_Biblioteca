@@ -38,6 +38,7 @@ public class Libros_Nuevos extends javax.swing.JPanel {
         lbl_editorial.setForeground(Color.black);
         //Hacer los text area redondeados
         txt_Titulo.putClientProperty( "JComponent.roundRect", true );
+        txt_cantLib.putClientProperty( "JComponent.roundRect", true );
         //Hacer el boton con bordes redondeados
         btn_Guardar.putClientProperty( "JButton.buttonType", "roundRect" );
         //Poner el combo box con elestilo
