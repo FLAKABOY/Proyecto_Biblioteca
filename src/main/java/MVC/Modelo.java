@@ -625,7 +625,7 @@ public class Modelo {
 
                 if (usuarioExiste) {
                     // Generar la consulta de inserción para la tabla de préstamos
-                    String consultaInsercion = "INSERT INTO prestamos (idUsuario, cantLibros) VALUES (?, ?)";
+                    String consultaInsercion = "INSERT INTO prestamos (idUsuario, cantLib) VALUES (?, ?)";
 
                     try ( PreparedStatement preparedStatement = connection.prepareStatement(consultaInsercion)) {
 
@@ -660,6 +660,9 @@ public class Modelo {
     }
 
     public static void generarFolio(int idLibro) {
+        // Declarar la variable para el último ID de préstamo
+        int ultimoIdPrestamo = -1; // Valor predeterminado en caso de que no se pueda obtener
+
         // Verificar si el libro existe utilizando la función almacenada
         String libroExisteQuery = "SELECT libroExiste(?)";
 
@@ -719,8 +722,74 @@ public class Modelo {
                             return; // Salir del método si no hay libros disponibles
                         }
 
-                        // Resto del código para verificar cantidad de folios y generar folio
-                        // ...
+                        // Obtener la cantidad de folios disponibles desde la función almacenada
+                        // Obtener la cantidad de folios disponibles utilizando la función almacenada
+                        int foliosDisponibles = obtenerFoliosDisponibles(obtenerLastInsertIdPrestamo());
+
+                        // Insertar el folio en la tabla folio si hay libros disponibles y todo es válido
+                        if (cantidadDisponible > 0 && foliosDisponibles > 0) {
+                            // Obtener el último ID insertado en la tabla prestamo
+                            int lastInsertedIdPrestamo = obtenerLastInsertIdPrestamo();
+
+                            // Obtener el idUsuario del último registro insertado en prestamos
+                            int idUsuario = -1; // Valor predeterminado en caso de que no se pueda obtener
+
+                            try ( Connection conexion = conectar()) {
+                                // Crear una consulta para obtener el último idPrestamo insertado en prestamos
+                                String obtenerUltimoIdPrestamoQuery = "SELECT MAX(idPrestamo) AS ultimoIdPrestamo FROM prestamos";
+
+                                try ( PreparedStatement obtenerUltimoIdPrestamoStatement = conexion.prepareStatement(obtenerUltimoIdPrestamoQuery);  ResultSet obtenerUltimoIdPrestamoResult = obtenerUltimoIdPrestamoStatement.executeQuery()) {
+
+                                    if (obtenerUltimoIdPrestamoResult.next()) {
+                                        ultimoIdPrestamo = obtenerUltimoIdPrestamoResult.getInt("ultimoIdPrestamo");
+
+                                        // Crear una consulta para obtener el idUsuario del último registro insertado en prestamos
+                                        String obtenerIdUsuarioQuery = "SELECT idUsuario FROM prestamos WHERE idPrestamo = ?";
+
+                                        try ( PreparedStatement obtenerIdUsuarioStatement = conexion.prepareStatement(obtenerIdUsuarioQuery)) {
+                                            obtenerIdUsuarioStatement.setInt(1, ultimoIdPrestamo);
+
+                                            try ( ResultSet obtenerIdUsuarioResult = obtenerIdUsuarioStatement.executeQuery()) {
+                                                if (obtenerIdUsuarioResult.next()) {
+                                                    idUsuario = obtenerIdUsuarioResult.getInt("idUsuario");
+                                                } else {
+                                                    throw new SQLException("No se pudo obtener un idUsuario válido del último registro insertado en prestamos");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                // Manejo de excepciones en caso de algún error en la base de datos
+                            }
+
+                            // Insertar el folio en la tabla folio
+                            String insertFolioQuery = "INSERT INTO folio (idPrestamo, idLibro, idUsuario, estado) VALUES (?, ?, ?, ?)";
+
+                            try ( PreparedStatement insertFolioStatement = connection.prepareStatement(insertFolioQuery)) {
+                                // Establecer los parámetros en la consulta
+                                insertFolioStatement.setInt(1, ultimoIdPrestamo);
+                                insertFolioStatement.setInt(2, idLibro);
+                                insertFolioStatement.setInt(3, idUsuario); // Obtener el idUsuario (puede variar según tu lógica)
+                                insertFolioStatement.setBoolean(4, estadoLibro); // Estado inicial del folio
+
+                                // Ejecutar la inserción
+                                System.out.println(insertFolioStatement);
+                                insertFolioStatement.executeUpdate();
+
+                                // Restar uno a la cantidad disponible de libros y de folios
+                                cantidadDisponible--;
+                                foliosDisponibles--;
+
+                                // ... (resto del código para mostrar mensajes o realizar acciones)
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                // Manejo de excepciones en caso de algún error en la base de datos
+                            }
+                        }
+
+                        // ... (resto del código para verificar cantidad de folios y generar folio)
                     } catch (SQLException e) {
                         e.printStackTrace();
                         // Manejo de excepciones en caso de algún error en la base de datos
@@ -736,6 +805,44 @@ public class Modelo {
             e.printStackTrace();
             // Manejo de excepciones en caso de algún error en la base de datos
         }
+    }
+
+    // Función para obtener la cantidad de folios disponibles
+    // Función para obtener la cantidad de folios disponibles basada en el idPrestamo
+    public static int obtenerFoliosDisponibles(int idPrestamo) {
+        String obtenerCantidadFoliosQuery = "SELECT obtenerCantidadFolios(?)";
+        int foliosDisponibles = 0;
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement obtenerCantidadFoliosStatement = connection.prepareStatement(obtenerCantidadFoliosQuery)) {
+
+            obtenerCantidadFoliosStatement.setInt(1, idPrestamo);
+
+            try ( ResultSet obtenerCantidadFoliosResult = obtenerCantidadFoliosStatement.executeQuery()) {
+                if (obtenerCantidadFoliosResult.next()) {
+                    foliosDisponibles = obtenerCantidadFoliosResult.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        return foliosDisponibles;
+    }
+
+    // Metodo para obtener el último ID insertado en la tabla prestamo
+    public static int obtenerLastInsertIdPrestamo() {
+        int lastInsertedIdPrestamo = 0;
+        try ( Connection connection = Modelo.conectar();  Statement lastInsertIdPrestamoStatement = connection.createStatement();  ResultSet lastInsertIdPrestamoResult = lastInsertIdPrestamoStatement.executeQuery("SELECT LAST_INSERT_ID()")) {
+            if (lastInsertIdPrestamoResult.next()) {
+                lastInsertedIdPrestamo = lastInsertIdPrestamoResult.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+        return lastInsertedIdPrestamo;
     }
 
     /**
@@ -865,6 +972,7 @@ public class Modelo {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "ERROR EN LA CONSULTA DE LA BASE DE DATOS");
             // Manejo de excepciones en caso de algún error en la base de datos
         }
     }
@@ -1343,7 +1451,7 @@ public class Modelo {
      */
     public static void llenarComboBoxGeneros(JComboBox<String> comboBox) {
         // Limpiar el combo box antes de llenarlo nuevamente
-        comboBox.removeAllItems();
+        //comboBox.removeAllItems();
 
         // Consulta SQL para obtener los géneros ordenados alfabéticamente
         String consulta = "SELECT genero FROM genero ORDER BY genero ASC";
@@ -1369,7 +1477,7 @@ public class Modelo {
      */
     public static void llenarComboBoxAutores(JComboBox<String> comboBox) {
         // Limpiar el combo box antes de llenarlo nuevamente
-        comboBox.removeAllItems();
+        //comboBox.removeAllItems();
 
         // Consulta SQL para obtener los nombres de los autores ordenados alfabéticamente
         String consulta = "SELECT nombre FROM autor ORDER BY nombre ASC";
@@ -1394,7 +1502,7 @@ public class Modelo {
      */
     public static void llenarComboBoxEditoriales(JComboBox<String> comboBox) {
         // Limpiar el combo box antes de llenarlo nuevamente
-        comboBox.removeAllItems();
+        //comboBox.removeAllItems();
 
         // Consulta SQL para obtener los nombres de las editoriales ordenados alfabéticamente
         String consulta = "SELECT editorial FROM editorial ORDER BY editorial ASC";
@@ -1770,7 +1878,7 @@ public class Modelo {
             Libro.editorial = editorial;
             Libro.titulo = titulo;
             Libro.cantDisp = cantDisp;
-            Libro.estado = true;
+            Libro.estado = estado;
         }
 
         // Getters y setters

@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -719,6 +720,7 @@ public class Controlador implements ActionListener, KeyListener {
 
                 //Regresar al panle principal de devoluciones
                 vista.content = vista(devolucionesPanel);
+                limpiarTexto();
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -836,11 +838,12 @@ public class Controlador implements ActionListener, KeyListener {
                             librosEditar.cb_genero.getSelectedItem().toString(),
                             librosEditar.cb_editorial.getSelectedItem().toString(),
                             librosEditar.cb_estado.getSelectedItem().toString());
-                    
+
                     //Actualizar la tabla con los datos
                     librosPanel.tbl_Libros = Modelo.mostrarLibros(librosPanel.tbl_Libros);
                     //Volver a al panel de libros
                     vista.content = vista(librosPanel);
+                    limpiarTexto();
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Los campos a actualizar no pueden ser vacios.");
@@ -1312,31 +1315,31 @@ public class Controlador implements ActionListener, KeyListener {
 
     //Metodo para llenar los campos de editar Libro y sea mas facil la modificacion
     public void colocarDatosLibroId(Libro libro) {
-        //Vaciar los combo box
+        // Vaciar los combo box
         librosEditar.cb_genero.removeAllItems();
         librosEditar.cb_autor.removeAllItems();
         librosEditar.cb_editorial.removeAllItems();
         librosEditar.cb_estado.removeAllItems();
 
-        //Se obtienen los valores del libro
+        // Se obtienen los valores del libro
         libro = Modelo.datosLibro(Integer.parseInt(librosEditar.txt_Bid.getText()));
 
-        //Colocar datos de del libro
+        // Colocar datos del libro
         librosEditar.cb_genero.insertItemAt(libro.getGenero(), 0);
         librosEditar.cb_autor.insertItemAt(libro.getAutor(), 0);
         librosEditar.cb_editorial.insertItemAt(libro.getEditorial(), 0);
 
-        //Mostrar el valor en los Combo Box
+        // Mostrar el valor en los Combo Box
         librosEditar.cb_genero.setSelectedItem(libro.getGenero());
         librosEditar.cb_autor.setSelectedItem(libro.getAutor());
         librosEditar.cb_editorial.setSelectedItem(libro.getEditorial());
 
-        //Colocar el titulo del libro en la caja de texto
+        // Colocar el título del libro en la caja de texto
         librosEditar.txt_Titulo.setText(libro.getTitulo());
-        //Colocar el id para el UPDATE
+        // Colocar el id para el UPDATE
         librosEditar.txt_Bid.setText(Integer.toString(libro.getId()));
 
-        //En caso de que se cumpla una condicion se llenara el comboBox
+        // En caso de que se cumpla una condición se llenará el comboBox
         if (libro.getEstado()) {
             librosEditar.cb_estado.insertItemAt("ACTIVO", 0);
             librosEditar.cb_estado.insertItemAt("INACTIVO", 1);
@@ -1346,11 +1349,30 @@ public class Controlador implements ActionListener, KeyListener {
             librosEditar.cb_estado.insertItemAt("ACTIVO", 1);
             librosEditar.cb_estado.setSelectedItem("INACTIVO");
         }
-        //Llenar los combo box con el resto de los datos para facilitar la
-        //Edicion del registro
+
+        // Llenar los combo box con el resto de los datos para facilitar la edición del registro
         Modelo.llenarComboBoxAutores(librosEditar.cb_autor);
-        Modelo.llenarComboBoxEditoriales(librosEditar.cb_editorial);
         Modelo.llenarComboBoxGeneros(librosEditar.cb_genero);
+        Modelo.llenarComboBoxEditoriales(librosEditar.cb_editorial);
+
+        // Verificar y evitar elementos repetidos en los combo box
+        verificarYEvitarRepetidos(librosEditar.cb_autor);
+        verificarYEvitarRepetidos(librosEditar.cb_genero);
+        verificarYEvitarRepetidos(librosEditar.cb_editorial);
+    }
+
+    public void verificarYEvitarRepetidos(JComboBox<String> comboBox) {
+        for (int i = 0; i < comboBox.getItemCount(); i++) {
+            String item = comboBox.getItemAt(i);
+            if (item != null && !item.isEmpty()) {
+                for (int j = i + 1; j < comboBox.getItemCount(); j++) {
+                    if (item.equals(comboBox.getItemAt(j))) {
+                        comboBox.removeItemAt(j);
+                        j--; // Decrement j as we removed an item
+                    }
+                }
+            }
+        }
     }
 
     public void colocarDatosLibroTitulo(Libro libro) {
@@ -1377,7 +1399,7 @@ public class Controlador implements ActionListener, KeyListener {
         librosEditar.txt_Titulo.setText(libro.getTitulo());
         //Colocar el id para el UPDATE
         librosEditar.txt_Bid.setText(Integer.toString(libro.getId()));
-        
+
         //En caso de que se cumpla una condicion se llenara el comboBox
         if (libro.getEstado()) {
             librosEditar.cb_estado.insertItemAt("ACTIVO", 0);
