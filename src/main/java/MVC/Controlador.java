@@ -731,6 +731,9 @@ public class Controlador implements ActionListener, KeyListener {
                         devolucionesEditar.tbl_Devoluciones_Editar,
                         devolucionesEditar.txt_Nombrelibro.getText(),
                         devolucionesEditar.cbx_Libro);
+                
+                Modelo.llenarComboBoxFolioPorTitulo(devolucionesEditar.cbx_Libro,
+                        devolucionesEditar.txt_Nombrelibro.getText());
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }

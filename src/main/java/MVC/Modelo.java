@@ -19,6 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  *
@@ -1189,73 +1192,77 @@ public class Modelo {
     }
 
     public static JTable buscarFolio(JTable tabla, String tituloLibro, JComboBox<String> comboBoxLibros) {
-    String consultaTabla = "{CALL BuscarFolioPorTitulo(?)}";
-    String consultaComboBox = "{CALL BuscarFolioPorTitulo(?)}";
+        String consulta = "{CALL BuscarFolioPorTitulo(?)}";
 
-    try (Connection conexion = Modelo.conectar()) {
-        // Llenar la tabla con los resultados
-        try (CallableStatement tablaStatement = conexion.prepareCall(consultaTabla);
-             ResultSet tablaResultado = tablaStatement.executeQuery()) {
-            DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-            modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+        try ( Connection conexion = Modelo.conectar();  CallableStatement callableStatement = conexion.prepareCall(consulta)) {
+            callableStatement.setString(1, tituloLibro);
 
-            while (tablaResultado.next()) {
-                Object[] fila = new Object[5]; // Asegúrate de ajustar el tamaño según la cantidad de columnas
-                fila[0] = tablaResultado.getInt("idFolio");
-                fila[1] = tablaResultado.getString("tituloLibro");
-                fila[2] = tablaResultado.getInt("idUsuario");
-                fila[3] = tablaResultado.getString("nombreUsuario");
-                fila[4] = tablaResultado.getBoolean("estado") ? "ACTIVO" : "INACTIVO";
-                modeloTabla.addRow(fila);
+            try ( ResultSet resultado = callableStatement.executeQuery()) {
+                DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+                modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+
+                // Obtener metadatos de la consulta
+                ResultSetMetaData metaData = resultado.getMetaData();
+                int columnas = metaData.getColumnCount();
+                String[] nombresColumnas = new String[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    nombresColumnas[i] = metaData.getColumnName(i + 1);
+                }
+
+                // Establecer nombres de columnas al modelo de la tabla
+                modeloTabla.setColumnIdentifiers(nombresColumnas);
+
+                // Llenar la tabla con los resultados
+                while (resultado.next()) {
+                    Object[] fila = new Object[columnas];
+                    for (int i = 0; i < columnas; i++) {
+                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                            boolean estado = resultado.getBoolean(i + 1);
+                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                        } else {
+                            fila[i] = resultado.getObject(i + 1);
+                        }
+                    }
+                    modeloTabla.addRow(fila);
+                }
+
+                // Llenar el ComboBox con los títulos de libros encontrados
+                //llenarComboBoxLibros(comboBoxLibros, resultado);
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        // Llenar el ComboBox con los títulos de libros encontrados
-        try (CallableStatement comboBoxStatement = conexion.prepareCall(consultaComboBox);
-             ResultSet comboBoxResultado = comboBoxStatement.executeQuery()) {
-            comboBoxLibros.removeAllItems();
-            llenarComboBoxLibros(comboBoxLibros, comboBoxResultado);
+        return tabla;
+    }
+
+    public static void llenarComboBoxFolioPorTitulo(JComboBox<String> comboBoxLibros, String tituloLibro) {
+    String consulta = "{CALL BuscarFolioPorTitulo(?)}";
+
+    // Usar un conjunto (Set) para almacenar títulos únicos
+    Set<String> titulosUnicos = new HashSet<String>();  // Corrección aquí
+
+    try (Connection conexion = Modelo.conectar(); CallableStatement statement = conexion.prepareCall(consulta)) {
+        statement.setString(1, tituloLibro);
+        ResultSet resultado = statement.executeQuery();
+
+        while (resultado.next()) {
+            String titulo = resultado.getString("tituloLibro");
+            titulosUnicos.add(titulo); // Agregar título al conjunto
         }
 
     } catch (SQLException e) {
         e.printStackTrace();
     }
 
-    return tabla;
+    // Limpiar el comboBox y agregar los títulos únicos
+    comboBoxLibros.removeAllItems();
+    for (String titulo : titulosUnicos) {
+        comboBoxLibros.addItem(titulo);
+    }
 }
 
-
-    public static JTable llenarTablaFolios(JTable tabla, ResultSet resultado) throws SQLException {
-        DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-        modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
-
-        // Obtener metadatos de la consulta
-        ResultSetMetaData metaData = resultado.getMetaData();
-        int columnas = metaData.getColumnCount();
-        String[] nombresColumnas = new String[columnas];
-        for (int i = 0; i < columnas; i++) {
-            nombresColumnas[i] = metaData.getColumnName(i + 1);
-        }
-
-        // Establecer nombres de columnas al modelo
-        modeloTabla.setColumnIdentifiers(nombresColumnas);
-
-        // Llenar la tabla con los resultados
-        while (resultado.next()) {
-            Object[] fila = new Object[columnas];
-            for (int i = 0; i < columnas; i++) {
-                if (nombresColumnas[i].equalsIgnoreCase("estado")) {
-                    boolean estado = resultado.getBoolean(i + 1);
-                    fila[i] = estado ? "ACTIVO" : "INACTIVO";
-                } else {
-                    fila[i] = resultado.getObject(i + 1);
-                }
-            }
-            modeloTabla.addRow(fila);
-        }
-
-        return tabla;
-    }
 
     public static DefaultTableModel llenarModeloTabla(ResultSet resultado) throws SQLException {
         DefaultTableModel modeloTabla = new DefaultTableModel();
