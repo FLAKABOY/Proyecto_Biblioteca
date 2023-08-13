@@ -89,7 +89,7 @@ public class Libros extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "ID", "TITULO", "AUTOR", "EDITORIAL"
+                "ID", "TITULO", "EDITORIAL", "AUTOR"
             }
         ));
         jScrollPane1.setViewportView(tbl_Libros);

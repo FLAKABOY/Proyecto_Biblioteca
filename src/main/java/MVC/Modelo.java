@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
@@ -1029,7 +1030,7 @@ public class Modelo {
     //Metodo para mostrar todos los folios vinculados al ID del prestamo
     public static JTable mostrarFolios(JTable tabla) {
         // Definir la consulta SQL para obtener todos los folios
-        String consulta = "SELECT idFolio, idPrestamo, idLibro, idUsuario FROM folio";
+        String consulta = "SELECT idFolio, idPrestamo, idLibro, idUsuario, estado FROM folio";
 
         // Obtener el modelo de la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
@@ -1037,23 +1038,28 @@ public class Modelo {
 
         try ( Connection conexion = Modelo.conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta);  ResultSet resultado = preparedStatement.executeQuery()) {
 
+            // Obtener metadatos de la consulta
+            ResultSetMetaData metaData = resultado.getMetaData();
+            int columnas = metaData.getColumnCount();
+            String[] nombresColumnas = new String[columnas];
+            for (int i = 0; i < columnas; i++) {
+                nombresColumnas[i] = metaData.getColumnName(i + 1);
+            }
+
+            // Establecer nombres de columnas al modelo
+            modeloTabla.setColumnIdentifiers(nombresColumnas);
+
             // Llenar la tabla con los resultados
             while (resultado.next()) {
-                // Obtener los valores de cada columna del resultado
-                int idFolio = resultado.getInt("idFolio");
-                int idPrestamo = resultado.getInt("idPrestamo");
-                int idLibro = resultado.getInt("idLibro");
-                int idUsuario = resultado.getInt("idUsuario");
-
-                // Crear una fila con los valores obtenidos
-                Object[] fila = new Object[]{
-                    idFolio,
-                    idPrestamo,
-                    idLibro,
-                    idUsuario
-                };
-
-                // Agregar la fila al modelo de la tabla
+                Object[] fila = new Object[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                        boolean estado = resultado.getBoolean(i + 1);
+                        fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                    } else {
+                        fila[i] = resultado.getObject(i + 1);
+                    }
+                }
                 modeloTabla.addRow(fila);
             }
 
@@ -1068,9 +1074,9 @@ public class Modelo {
     //Metodo para buscar los folios vinculados al ID del prestamo
     /**
      *
-     * @param tabla
-     * @param idPrestamo
-     * @param comboBox
+     * @param tabla A LLENAR
+     * @param idPrestamo Con el que hara la consulta
+     * @param comboBox Que llenara con los libros ligados a ese prestamo
      * @return Tabla con los folios
      */
     public static JTable buscarFolios(JTable tabla, int idPrestamo, JComboBox<String> comboBox) {
@@ -1093,7 +1099,7 @@ public class Modelo {
                     System.out.println("El préstamo no existe.");
                 } else {
                     // Realizar consulta para obtener los folios vinculados al ID del préstamo
-                    String consulta = "SELECT idFolio, idPrestamo, idLibro, idUsuario FROM folio WHERE idPrestamo = ?";
+                    String consulta = "SELECT * FROM folio WHERE idPrestamo = ?";
 
                     // Obtener el modelo de la tabla
                     DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
@@ -1104,30 +1110,36 @@ public class Modelo {
                         preparedStatement.setInt(1, idPrestamo);
 
                         try ( ResultSet resultado = preparedStatement.executeQuery()) {
+                            // Obtener metadatos de la consulta
+                            ResultSetMetaData metaData = resultado.getMetaData();
+                            int columnas = metaData.getColumnCount();
+                            String[] nombresColumnas = new String[columnas];
+                            for (int i = 0; i < columnas; i++) {
+                                nombresColumnas[i] = metaData.getColumnName(i + 1);
+                            }
+
+                            // Establecer nombres de columnas al modelo
+                            modeloTabla.setColumnIdentifiers(nombresColumnas);
+
                             // Llenar la tabla con los resultados
                             while (resultado.next()) {
-                                // Obtener los valores de cada columna del resultado
-                                int idFolio = resultado.getInt("idFolio");
-                                int idLibro = resultado.getInt("idLibro");
-                                int idUsuario = resultado.getInt("idUsuario");
-
-                                // Crear una fila con los valores obtenidos
-                                Object[] fila = new Object[]{
-                                    idFolio,
-                                    idPrestamo,
-                                    idLibro,
-                                    idUsuario
-                                };
-
-                                // Agregar la fila al modelo de la tabla
+                                Object[] fila = new Object[columnas];
+                                for (int i = 0; i < columnas; i++) {
+                                    if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                                        boolean estado = resultado.getBoolean(i + 1);
+                                        fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                                    } else {
+                                        fila[i] = resultado.getObject(i + 1);
+                                    }
+                                }
                                 modeloTabla.addRow(fila);
 
                                 // Llenar el JComboBox con el título del libro
+                                int idLibro = resultado.getInt("idLibro");
                                 String tituloLibro = obtenerTituloLibro(idLibro); // Función para obtener el título
                                 comboBox.addItem(tituloLibro);
                             }
                         }
-
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -1177,58 +1189,103 @@ public class Modelo {
     }
 
     public static JTable buscarFolio(JTable tabla, String tituloLibro, JComboBox<String> comboBoxLibros) {
-        // Definir la consulta SQL para buscar folios por título de libro
-        String consulta = "CALL BuscarFolioPorTitulo(?)";
+    String consultaTabla = "{CALL BuscarFolioPorTitulo(?)}";
+    String consultaComboBox = "{CALL BuscarFolioPorTitulo(?)}";
 
-        // Obtener el modelo de la tabla
+    try (Connection conexion = Modelo.conectar()) {
+        // Llenar la tabla con los resultados
+        try (CallableStatement tablaStatement = conexion.prepareCall(consultaTabla);
+             ResultSet tablaResultado = tablaStatement.executeQuery()) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+            modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+
+            while (tablaResultado.next()) {
+                Object[] fila = new Object[5]; // Asegúrate de ajustar el tamaño según la cantidad de columnas
+                fila[0] = tablaResultado.getInt("idFolio");
+                fila[1] = tablaResultado.getString("tituloLibro");
+                fila[2] = tablaResultado.getInt("idUsuario");
+                fila[3] = tablaResultado.getString("nombreUsuario");
+                fila[4] = tablaResultado.getBoolean("estado") ? "ACTIVO" : "INACTIVO";
+                modeloTabla.addRow(fila);
+            }
+        }
+
+        // Llenar el ComboBox con los títulos de libros encontrados
+        try (CallableStatement comboBoxStatement = conexion.prepareCall(consultaComboBox);
+             ResultSet comboBoxResultado = comboBoxStatement.executeQuery()) {
+            comboBoxLibros.removeAllItems();
+            llenarComboBoxLibros(comboBoxLibros, comboBoxResultado);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return tabla;
+}
+
+
+    public static JTable llenarTablaFolios(JTable tabla, ResultSet resultado) throws SQLException {
         DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
 
-        try ( Connection conexion = Modelo.conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
-            // Establecer el parámetro (título de libro) en la consulta
-            preparedStatement.setString(1, tituloLibro);
-
-            try ( ResultSet resultado = preparedStatement.executeQuery()) {
-                boolean hayResultados = false;
-
-                // Llenar el ComboBox con los títulos de libros encontrados
-                llenarComboBoxLibros(comboBoxLibros, resultado);
-
-                // Llenar la tabla con los resultados
-                while (resultado.next()) {
-                    hayResultados = true;
-
-                    // Obtener los valores de cada columna del resultado
-                    int idFolio = resultado.getInt("idFolio");
-                    String titulo = resultado.getString("tituloLibro");
-                    int idUsuario = resultado.getInt("idUsuario");
-                    String nombreUsuario = resultado.getString("nombreUsuario");
-                    String estado = resultado.getString("estado");
-
-                    // Crear una fila con los valores obtenidos
-                    Object[] fila = new Object[]{
-                        idFolio,
-                        titulo,
-                        idUsuario,
-                        nombreUsuario,
-                        estado
-                    };
-
-                    // Agregar la fila al modelo de la tabla
-                    modeloTabla.addRow(fila);
-                }
-
-                if (!hayResultados) {
-                    JOptionPane.showMessageDialog(null, "No se encontraron folios para el título de libro proporcionado.");
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        // Obtener metadatos de la consulta
+        ResultSetMetaData metaData = resultado.getMetaData();
+        int columnas = metaData.getColumnCount();
+        String[] nombresColumnas = new String[columnas];
+        for (int i = 0; i < columnas; i++) {
+            nombresColumnas[i] = metaData.getColumnName(i + 1);
         }
 
-        // Retornar la tabla con los resultados
+        // Establecer nombres de columnas al modelo
+        modeloTabla.setColumnIdentifiers(nombresColumnas);
+
+        // Llenar la tabla con los resultados
+        while (resultado.next()) {
+            Object[] fila = new Object[columnas];
+            for (int i = 0; i < columnas; i++) {
+                if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                    boolean estado = resultado.getBoolean(i + 1);
+                    fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                } else {
+                    fila[i] = resultado.getObject(i + 1);
+                }
+            }
+            modeloTabla.addRow(fila);
+        }
+
         return tabla;
+    }
+
+    public static DefaultTableModel llenarModeloTabla(ResultSet resultado) throws SQLException {
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+
+        // Obtener metadatos de la consulta
+        ResultSetMetaData metaData = resultado.getMetaData();
+        int columnas = metaData.getColumnCount();
+        String[] nombresColumnas = new String[columnas];
+        for (int i = 0; i < columnas; i++) {
+            nombresColumnas[i] = metaData.getColumnName(i + 1);
+        }
+
+        // Establecer nombres de columnas al modelo
+        modeloTabla.setColumnIdentifiers(nombresColumnas);
+
+        // Llenar el modelo de tabla con los resultados
+        while (resultado.next()) {
+            Object[] fila = new Object[columnas];
+            for (int i = 0; i < columnas; i++) {
+                if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                    boolean estado = resultado.getBoolean(i + 1);
+                    fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                } else {
+                    fila[i] = resultado.getObject(i + 1);
+                }
+            }
+            modeloTabla.addRow(fila);
+        }
+
+        return modeloTabla;
     }
 
     public static void llenarComboBoxLibros(JComboBox<String> comboBoxLibros, ResultSet resultado) throws SQLException {
@@ -1242,7 +1299,7 @@ public class Modelo {
         }
     }
 
-    //Metodo para actualizar un el estado de un folio
+    // Metodo para actualizar el estado de un folio
     public static void updateFolio(int idPrestamo, String nombreLibro, boolean estado) {
         // Verificar si el préstamo existe utilizando la función SQL
         String prestamoExisteQuery = "SELECT prestamoExiste(?)";
@@ -1281,14 +1338,14 @@ public class Modelo {
                                     verificarEstadoStatement.setInt(1, idFolio);
                                     try ( ResultSet estadoResult = verificarEstadoStatement.executeQuery()) {
                                         estadoResult.next();
-                                        String estadoActual = estadoResult.getString("estado");
+                                        boolean estadoActual = estadoResult.getBoolean("estado");
 
                                         // Verificar si el estado actual es diferente al nuevo estado
-                                        if (!estadoActual.equalsIgnoreCase(estado ? "Entregado" : "Pendiente")) {
+                                        if (estadoActual != estado) {
                                             // Actualizar el estado del folio
                                             String updateQuery = "UPDATE folio SET estado = ? WHERE idFolio = ?";
                                             try ( PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                                                updateStatement.setString(1, estado ? "Entregado" : "Pendiente");
+                                                updateStatement.setBoolean(1, estado);
                                                 updateStatement.setInt(2, idFolio);
                                                 updateStatement.executeUpdate();
 
@@ -1296,8 +1353,8 @@ public class Modelo {
                                                 System.out.println("Estado del folio actualizado exitosamente.");
                                             }
                                         } else {
-                                            JOptionPane.showMessageDialog(null, "El estado del folio ya es " + estadoActual);
-                                            System.out.println("El estado del folio ya es " + estadoActual);
+                                            JOptionPane.showMessageDialog(null, "El estado del folio ya es " + (estado ? "Pendiente" : "Entregado"));
+                                            System.out.println("El estado del folio ya es " + (estado ? "Pendiente" : "Entregado"));
                                         }
                                     }
                                 }
@@ -1324,7 +1381,6 @@ public class Modelo {
     public static JTable mostrarLibros(JTable tabla) {
         // Definir la consulta SQL para llamar al procedimiento almacenado
         String consulta = "CALL MostrarLibros()";
-
         // Obtener el modelo de la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos

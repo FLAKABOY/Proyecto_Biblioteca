@@ -81,13 +81,13 @@ public class Devoluciones extends javax.swing.JPanel {
         tbl_Devoluciones.setBackground(new java.awt.Color(255, 255, 255));
         tbl_Devoluciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "NOM LIB", "NUM COPIA", "ESTADO", "ID COPIA", "ID EMPLEADO", "ID PRESTAMO", "ID USUARIO"
+                "ID", "ID PRESTAMO", "ID LIBRO", "ID USUARIO", "ESTADO"
             }
         ));
         jScrollPane1.setViewportView(tbl_Devoluciones);

@@ -117,7 +117,15 @@ public class Devoluciones_Editar extends javax.swing.JPanel {
             new String [] {
                 "BUSCAR EN FOLIO..."
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tbl_Devoluciones_Editar);
 
         lbl_libro.setText("LIBRO");
