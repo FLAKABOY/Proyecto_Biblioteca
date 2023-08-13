@@ -98,13 +98,13 @@ public class Prestamo_Eliminar extends javax.swing.JPanel {
 
         tbl_Prestamos_Eliminar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "BUSCAR PRESTAMO..."
+
             }
         ));
         jScrollPane1.setViewportView(tbl_Prestamos_Eliminar);

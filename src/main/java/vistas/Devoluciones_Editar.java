@@ -37,8 +37,9 @@ public class Devoluciones_Editar extends javax.swing.JPanel {
         //Cambiar los botones a redondeados
         btn_BuscarNombreLibro.putClientProperty( "JButton.buttonType", "roundRect" );
         btn_BuscarFolio.putClientProperty( "JButton.buttonType", "roundRect" );
+        btn_Guardar.putClientProperty( "JButton.buttonType", "roundRect" );
         //Poner el combo box con elestilo
-        cbx_Libro.putClientProperty( "JComponent.roundRect", true );
+        cbx_Libro.putClientProperty( "JComponent.roundRect", true );       
      }
 
     /** This method is called from within the constructor to
@@ -109,23 +110,15 @@ public class Devoluciones_Editar extends javax.swing.JPanel {
         tbl_Devoluciones_Editar.setBackground(new java.awt.Color(255, 255, 255));
         tbl_Devoluciones_Editar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "BUSCAR EN FOLIO..."
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
-        });
+        ));
         jScrollPane1.setViewportView(tbl_Devoluciones_Editar);
 
         lbl_libro.setText("LIBRO");

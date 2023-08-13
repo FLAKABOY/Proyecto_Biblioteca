@@ -321,7 +321,7 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 limpiarTexto();
                 vista.content = vista(librosPanel);
-                librosPanel.tbl_Libros = Modelo.mostrarLibros(librosPanel.tbl_Libros);
+                Modelo.mostrarLibros(librosPanel.tbl_Libros);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -382,6 +382,8 @@ public class Controlador implements ActionListener, KeyListener {
                             usuarioN.txt_Tel.getText());
                     //Volver a la panel principal de usuarios
                     vista.content = vista(usuariosPanel);
+                    //Actualizar la tabla
+                    Modelo.mostrarUsers(usuariosPanel.tbl_users);
                     //Limpiar campos
                     limpiarTexto();
                 } else {
@@ -401,7 +403,10 @@ public class Controlador implements ActionListener, KeyListener {
                     Modelo.logicDelete(Integer.parseInt(usuarioB.txt_Bid.getText()));
                     //Volver al panel principal de usuarios
                     vista.content = vista(usuariosPanel);
+                    //Actualizar tabla
                     Modelo.mostrarUsers(usuariosPanel.tbl_users);
+                    //Limpiar campos
+                    limpiarTexto();
                 } else {
                     JOptionPane.showMessageDialog(null, "FAVOR DE INGRESAR UN ID PARA EL PROCESO");
                 }
@@ -539,7 +544,7 @@ public class Controlador implements ActionListener, KeyListener {
                     Modelo.generarPrestamo(Integer.parseInt(prestamoNuevoDatos.txt_idUser.getText()),
                             Integer.parseInt(prestamoNuevoDatos.cb_cantlib.getSelectedItem().toString()));
                     //Pasar al panel para Generrar folio y relacionarlo con prestamo
-                    vista.content = vista(prestamoNuevoGenerar);
+                    vista.content = vista(prestamoNuevoVincular);
                 } else {
                     JOptionPane.showMessageDialog(null, "FAVOR DE INGRESAR EL ID Y LA CANTIDAD DE LIBROS PARA GENERAR EL REGISTRO ");
                 }
@@ -624,6 +629,8 @@ public class Controlador implements ActionListener, KeyListener {
                 if (!prestamoNuevoVincular.txt_idPrestamo.getText().isEmpty() && !prestamoNuevoVincular.txt_Id.getText().isEmpty()) {
                     Modelo.generarFolio(Integer.parseInt(prestamoNuevoVincular.txt_idPrestamo.getText()),
                             Integer.parseInt(prestamoNuevoVincular.txt_Id.getText()));
+                    //Limpiar los campos
+                    limpiarTexto();
                 } else {
                     JOptionPane.showMessageDialog(null, "Favor de ingresar el ID del prestamo y el ID del libro");
                 }
@@ -702,25 +709,33 @@ public class Controlador implements ActionListener, KeyListener {
         if (devolucionesEditar.btn_Guardar == evento.getSource()) {
             try {
                 //Validar que los campos necesarios para actualizar no sean vacios
-                if (!devolucionesEditar.cbx_Libro.getSelectedItem().toString().isEmpty() && (devolucionesEditar.rb_Entregado.isSelected() || devolucionesEditar.rb_Pendiente.isSelected())) {
+                if (!devolucionesEditar.cbx_Libro.getSelectedItem().toString().isEmpty() && (devolucionesEditar.rb_Entregado.isSelected() || devolucionesEditar.rb_Pendiente.isSelected()) && !devolucionesEditar.txt_IdPrestamo.getText().isEmpty()) {
+                    //Comprobar que estado se va a actualizar
                     if (devolucionesEditar.rb_Entregado.isSelected()) {
+                        //Llamar a modelo con el metodo de actualizar el estado de un folio
                         Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
                                 devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
                                 false);
-
+                        //Limpiar el texto pos si se busca actualizar algun otro folio
+                        limpiarTexto();
                     } else if (devolucionesEditar.rb_Pendiente.isSelected()) {
                         // Acciones a realizar cuando el botón rb_Pendiente está seleccionado
                         Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
                                 devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
                                 true);
-
+                       //Regresar al panle principal de devoluciones
+                       vista.content = vista(devolucionesPanel);
+                       Modelo.mostrarFolios(devolucionesPanel.tbl_Devoluciones);
+                       limpiarTexto();
                     }
                 }
-                //Llamar a modelo con el metodo de actualizar el estado de un folio
+                
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes correctamente (ID,libro seleccionado y estado)");
+                }
+                
 
-                //Regresar al panle principal de devoluciones
-                vista.content = vista(devolucionesPanel);
-                limpiarTexto();
+                
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1274,8 +1289,32 @@ public class Controlador implements ActionListener, KeyListener {
         librosEditar.cb_autor.removeAllItems();
         librosEditar.cb_editorial.removeAllItems();
         librosEditar.cb_genero.removeAllItems();
+        
+        //Limpiar las Tablas de los paneles secundarios
+        vaciarTabla(usuarioB.tbl_users_borrar);
+        
+        vaciarTabla(prestamoNuevo.tbl_Prestamo_Nuevo);
+        vaciarTabla(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos);
+        vaciarTabla(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar);
+        vaciarTabla(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular);
+        vaciarTabla(prestamoEliminar.tbl_Prestamos_Eliminar);
+        
+        vaciarTabla(devolucionesEditar.tbl_Devoluciones_Editar);
+        
+        vaciarTabla(librosBorrar.tbl_Libros_Borrar);
+        
+        
+        //prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos.setRowCount(0);
     }//Fin del metodo de limpiar los campos
 
+    
+    public void vaciarTabla(JTable tabla){
+        DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+
+        // Vaciar el modelo eliminando todas las filas
+        modeloTabla.setRowCount(0);
+        
+    }
     //Metodo para llenar los campos de editar usuario y sea mas facil la modificacion
     public void colocarDatosUserId(Usuario usuario) {
         usuario = Modelo.datosUser(Integer.parseInt(usuarioE.txt_Bid.getText()));

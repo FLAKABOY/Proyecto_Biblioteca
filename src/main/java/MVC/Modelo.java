@@ -22,7 +22,6 @@ import javax.swing.JComboBox;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  *
  * @author Jorge
@@ -446,8 +445,7 @@ public class Modelo {
      */
     public static JTable buscarPrestamo(JTable tabla, int idPrestamo) {
         // Definir la consulta SQL para buscar el préstamo por su ID
-        String consulta = "SELECT idPrestamo, idUsuario, fechaPrestamo, fechaDev, cantLib, adeudo, "
-                + "CASE WHEN estado = true THEN 'ACTIVO' ELSE 'INACTIVO' END AS estado "
+        String consulta = "SELECT idPrestamo, idUsuario, fechaPrestamo, fechaDev, cantLib, adeudo, estado "
                 + "FROM prestamos WHERE idPrestamo = ?";
 
         // Obtener el modelo de la tabla
@@ -460,29 +458,28 @@ public class Modelo {
             preparedStatement.setInt(1, idPrestamo);
 
             try ( ResultSet resultado = preparedStatement.executeQuery()) {
+                // Obtener metadatos de la consulta
+                ResultSetMetaData metaData = resultado.getMetaData();
+                int columnas = metaData.getColumnCount();
+                String[] nombresColumnas = new String[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    nombresColumnas[i] = metaData.getColumnName(i + 1);
+                }
+
+                // Establecer nombres de columnas al modelo
+                modeloTabla.setColumnIdentifiers(nombresColumnas);
+
                 // Llenar la tabla con el resultado del préstamo buscado
                 while (resultado.next()) {
-                    // Obtener los valores de cada columna del resultado
-                    int idPrestamoEncontrado = resultado.getInt("idPrestamo");
-                    int idUsuario = resultado.getInt("idUsuario");
-                    Date fechaPrestamo = resultado.getDate("fechaPrestamo");
-                    Date fechaDev = resultado.getDate("fechaDev");
-                    int cantLib = resultado.getInt("cantLib");
-                    float adeudo = resultado.getFloat("adeudo");
-                    String estado = resultado.getString("estado");
-
-                    // Crear una fila con los valores obtenidos
-                    Object[] fila = new Object[]{
-                        idPrestamoEncontrado,
-                        idUsuario,
-                        fechaPrestamo,
-                        fechaDev,
-                        cantLib,
-                        adeudo,
-                        estado
-                    };
-
-                    // Agregar la fila al modelo de la tabla
+                    Object[] fila = new Object[columnas];
+                    for (int i = 0; i < columnas; i++) {
+                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                            boolean estado = resultado.getBoolean(i + 1);
+                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                        } else {
+                            fila[i] = resultado.getObject(i + 1);
+                        }
+                    }
                     modeloTabla.addRow(fila);
                 }
             }
@@ -498,7 +495,7 @@ public class Modelo {
     public static JTable buscarPrestamo(JTable tabla, String nombreUsuario) {
         // Definir la consulta SQL para buscar préstamos por el nombre del usuario
         String consulta = "SELECT p.idPrestamo, p.idUsuario, p.fechaPrestamo, p.fechaDev, p.cantLib, p.adeudo, "
-                + "CASE WHEN p.estado = true THEN 'ACTIVO' ELSE 'INACTIVO' END AS estado "
+                + "p.estado "
                 + "FROM prestamos AS p "
                 + "INNER JOIN usuarios AS u ON p.idUsuario = u.idUsuario "
                 + "WHERE u.nombre LIKE ?";
@@ -513,29 +510,28 @@ public class Modelo {
             preparedStatement.setString(1, "%" + nombreUsuario + "%");
 
             try ( ResultSet resultado = preparedStatement.executeQuery()) {
+                // Obtener metadatos de la consulta
+                ResultSetMetaData metaData = resultado.getMetaData();
+                int columnas = metaData.getColumnCount();
+                String[] nombresColumnas = new String[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    nombresColumnas[i] = metaData.getColumnName(i + 1);
+                }
+
+                // Establecer nombres de columnas al modelo
+                modeloTabla.setColumnIdentifiers(nombresColumnas);
+
                 // Llenar la tabla con los resultados de la búsqueda
                 while (resultado.next()) {
-                    // Obtener los valores de cada columna del resultado
-                    int idPrestamo = resultado.getInt("idPrestamo");
-                    int idUsuario = resultado.getInt("idUsuario");
-                    Date fechaPrestamo = resultado.getDate("fechaPrestamo");
-                    Date fechaDev = resultado.getDate("fechaDev");
-                    int cantLib = resultado.getInt("cantLib");
-                    float adeudo = resultado.getFloat("adeudo");
-                    String estado = resultado.getString("estado");
-
-                    // Crear una fila con los valores obtenidos
-                    Object[] fila = new Object[]{
-                        idPrestamo,
-                        idUsuario,
-                        fechaPrestamo,
-                        fechaDev,
-                        cantLib,
-                        adeudo,
-                        estado
-                    };
-
-                    // Agregar la fila al modelo de la tabla
+                    Object[] fila = new Object[columnas];
+                    for (int i = 0; i < columnas; i++) {
+                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                            boolean estado = resultado.getBoolean(i + 1);
+                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                        } else {
+                            fila[i] = resultado.getObject(i + 1);
+                        }
+                    }
                     modeloTabla.addRow(fila);
                 }
             }
@@ -640,8 +636,10 @@ public class Modelo {
                         int filasInsertadas = preparedStatement.executeUpdate();
 
                         if (filasInsertadas > 0) {
-                            System.out.println("Préstamo generado exitosamente.");
-                            JOptionPane.showMessageDialog(null, "PRESTAMO GENERADO EXITOSAMENTE");
+                            int idPrestamoGenerado = obtenerLastInsertIdPrestamo(); // Obtener el ID del último préstamo insertado
+                            String mensaje = "Préstamo número " + idPrestamoGenerado + " generado exitosamente.";
+                            System.out.println(mensaje);
+                            JOptionPane.showMessageDialog(null, mensaje);
                         } else {
                             System.out.println("No se pudo generar el préstamo.");
                             JOptionPane.showMessageDialog(null, "ERROR AL GENERAR EL PRESTAMO");
@@ -693,6 +691,7 @@ public class Modelo {
                             obtenerEstadoLibroResult.next();
                             estadoLibro = obtenerEstadoLibroResult.getBoolean("estado");
                         }
+
                     }
 
                     // Verificar si el libro está activo
@@ -726,9 +725,9 @@ public class Modelo {
                             return; // Salir del método si no hay libros disponibles
                         }
 
-                        // Obtener la cantidad de folios disponibles desde la función almacenada
                         // Obtener la cantidad de folios disponibles utilizando la función almacenada
                         int foliosDisponibles = obtenerFoliosDisponibles(obtenerLastInsertIdPrestamo());
+                        System.out.println("Ultimo id:" + foliosDisponibles);
 
                         // Insertar el folio en la tabla folio si hay libros disponibles y todo es válido
                         if (cantidadDisponible > 0 && foliosDisponibles > 0) {
@@ -786,14 +785,16 @@ public class Modelo {
                                 cantidadDisponible--;
                                 foliosDisponibles--;
 
-                                // ... (resto del código para mostrar mensajes o realizar acciones)
+                                JOptionPane.showMessageDialog(null, "Folio generado exitosamente");
+
+                                //(resto del código para mostrar mensajes o realizar acciones)
                             } catch (SQLException e) {
                                 e.printStackTrace();
                                 // Manejo de excepciones en caso de algún error en la base de datos
                             }
                         }
 
-                        // ... (resto del código para verificar cantidad de folios y generar folio)
+                        //(resto del código para verificar cantidad de folios y generar folio)
                     } catch (SQLException e) {
                         e.printStackTrace();
                         // Manejo de excepciones en caso de algún error en la base de datos
@@ -838,14 +839,18 @@ public class Modelo {
     // Metodo para obtener el último ID insertado en la tabla prestamo
     public static int obtenerLastInsertIdPrestamo() {
         int lastInsertedIdPrestamo = 0;
-        try ( Connection connection = Modelo.conectar();  Statement lastInsertIdPrestamoStatement = connection.createStatement();  ResultSet lastInsertIdPrestamoResult = lastInsertIdPrestamoStatement.executeQuery("SELECT LAST_INSERT_ID()")) {
-            if (lastInsertIdPrestamoResult.next()) {
-                lastInsertedIdPrestamo = lastInsertIdPrestamoResult.getInt(1);
+        String query = "SELECT obtenerUltimoIdInsertado() AS ultimoIdPrestamo";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement statement = connection.prepareStatement(query);  ResultSet result = statement.executeQuery()) {
+
+            if (result.next()) {
+                lastInsertedIdPrestamo = result.getInt("ultimoIdPrestamo");
             }
         } catch (SQLException e) {
             e.printStackTrace();
             // Manejo de excepciones en caso de algún error en la base de datos
         }
+
         return lastInsertedIdPrestamo;
     }
 
@@ -1058,7 +1063,7 @@ public class Modelo {
                 for (int i = 0; i < columnas; i++) {
                     if (nombresColumnas[i].equalsIgnoreCase("estado")) {
                         boolean estado = resultado.getBoolean(i + 1);
-                        fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                        fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
                     } else {
                         fila[i] = resultado.getObject(i + 1);
                     }
@@ -1130,7 +1135,7 @@ public class Modelo {
                                 for (int i = 0; i < columnas; i++) {
                                     if (nombresColumnas[i].equalsIgnoreCase("estado")) {
                                         boolean estado = resultado.getBoolean(i + 1);
-                                        fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                                        fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
                                     } else {
                                         fila[i] = resultado.getObject(i + 1);
                                     }
@@ -1218,7 +1223,7 @@ public class Modelo {
                     for (int i = 0; i < columnas; i++) {
                         if (nombresColumnas[i].equalsIgnoreCase("estado")) {
                             boolean estado = resultado.getBoolean(i + 1);
-                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                            fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
                         } else {
                             fila[i] = resultado.getObject(i + 1);
                         }
@@ -1238,31 +1243,30 @@ public class Modelo {
     }
 
     public static void llenarComboBoxFolioPorTitulo(JComboBox<String> comboBoxLibros, String tituloLibro) {
-    String consulta = "{CALL BuscarFolioPorTitulo(?)}";
+        String consulta = "{CALL BuscarFolioPorTitulo(?)}";
 
-    // Usar un conjunto (Set) para almacenar títulos únicos
-    Set<String> titulosUnicos = new HashSet<String>();  // Corrección aquí
+        // Usar un conjunto (Set) para almacenar títulos únicos
+        Set<String> titulosUnicos = new HashSet<String>();  // Corrección aquí
 
-    try (Connection conexion = Modelo.conectar(); CallableStatement statement = conexion.prepareCall(consulta)) {
-        statement.setString(1, tituloLibro);
-        ResultSet resultado = statement.executeQuery();
+        try ( Connection conexion = Modelo.conectar();  CallableStatement statement = conexion.prepareCall(consulta)) {
+            statement.setString(1, tituloLibro);
+            ResultSet resultado = statement.executeQuery();
 
-        while (resultado.next()) {
-            String titulo = resultado.getString("tituloLibro");
-            titulosUnicos.add(titulo); // Agregar título al conjunto
+            while (resultado.next()) {
+                String titulo = resultado.getString("tituloLibro");
+                titulosUnicos.add(titulo); // Agregar título al conjunto
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        // Limpiar el comboBox y agregar los títulos únicos
+        comboBoxLibros.removeAllItems();
+        for (String titulo : titulosUnicos) {
+            comboBoxLibros.addItem(titulo);
+        }
     }
-
-    // Limpiar el comboBox y agregar los títulos únicos
-    comboBoxLibros.removeAllItems();
-    for (String titulo : titulosUnicos) {
-        comboBoxLibros.addItem(titulo);
-    }
-}
-
 
     public static DefaultTableModel llenarModeloTabla(ResultSet resultado) throws SQLException {
         DefaultTableModel modeloTabla = new DefaultTableModel();
@@ -1356,6 +1360,23 @@ public class Modelo {
                                                 updateStatement.setInt(2, idFolio);
                                                 updateStatement.executeUpdate();
 
+                                                // Ajustar la cantidad disponible en libros según el estado nuevo y actual
+                                                String obtenerIdLibroQuery = "SELECT idLibro FROM libros WHERE titulo = ?";
+                                                try ( PreparedStatement obtenerIdLibroStatement = connection.prepareStatement(obtenerIdLibroQuery)) {
+                                                    obtenerIdLibroStatement.setString(1, nombreLibro);
+                                                    try ( ResultSet idLibroResult = obtenerIdLibroStatement.executeQuery()) {
+                                                        idLibroResult.next();
+                                                        int idLibro = idLibroResult.getInt("idLibro");
+
+                                                        String actualizarCantDispQuery = "UPDATE libros SET cantDisp = cantDisp "
+                                                                + (estado ? "- 1" : "+ 1") + " WHERE idLibro = ?";
+                                                        try ( PreparedStatement actualizarCantDispStatement = connection.prepareStatement(actualizarCantDispQuery)) {
+                                                            actualizarCantDispStatement.setInt(1, idLibro);
+                                                            actualizarCantDispStatement.executeUpdate();
+                                                        }
+                                                    }
+                                                }
+
                                                 JOptionPane.showMessageDialog(null, "Estado del folio actualizado exitosamente.");
                                                 System.out.println("Estado del folio actualizado exitosamente.");
                                             }
@@ -1376,8 +1397,8 @@ public class Modelo {
             e.printStackTrace();
         }
     }
-
     //------------------METODOS PARA EL APARTADO DE LIBROS--------------------\\
+
     /**
      * Llena la tabla con los registros de la tabla de libros, reemplazando las
      * llaves foraneas por los textos vinculados.
@@ -1852,6 +1873,12 @@ public class Modelo {
             // Manejo de excepciones en caso de algún error en la base de datos
         }
     }
+    
+    //Metodo para validar usuario y contraseña para ingresar a reportes
+//    public boolean void logIn(String usuario, String pass){
+//        
+//        return;
+//    }
 
     //Subclase para los usuarios
     public static class Usuario {

@@ -97,13 +97,13 @@ public class Prestamo_Nuevo_Datos extends javax.swing.JPanel {
 
         tbl_Prestamo_Nuevo_Datos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "BUSCAR USUARIO"
+
             }
         ));
         jScrollPane1.setViewportView(tbl_Prestamo_Nuevo_Datos);

@@ -24,6 +24,8 @@ public class Libros_Nuevos extends javax.swing.JPanel {
         //Mando a llamar el metodo del LOOK & FEEL
         IniStyles();
         
+        TextPrompt nom = new TextPrompt("INGRESE EL TITULO DEL LIBRO", txt_Titulo);
+        
     }
     
     //Metodo que contiene los estilos del LOOK & FEEL
