@@ -63,6 +63,7 @@ public class Prestamo extends javax.swing.JPanel {
         btn_Buscar.setForeground(new java.awt.Color(255, 255, 255));
         btn_Buscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/buscar.png"))); // NOI18N
         btn_Buscar.setText("Buscar");
+        btn_Buscar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 153));
 
@@ -86,7 +87,7 @@ public class Prestamo extends javax.swing.JPanel {
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "CANTIDAD", "FECHA PRESTAMO", "FECHA DEV", "ADEUDO", "ID USUARIO"
+                "ID", "CANTIDAD", "FECHA PRESTAMO", "FECHA DEV", "ID USUARIO", "ADEUDO"
             }
         ));
         jScrollPane1.setViewportView(tbl_Prestamos);
@@ -95,16 +96,19 @@ public class Prestamo extends javax.swing.JPanel {
         btn_Eliminar.setForeground(new java.awt.Color(255, 255, 255));
         btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/borrar24px.png"))); // NOI18N
         btn_Eliminar.setText("Eliminar");
+        btn_Eliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_Nuevo.setBackground(new java.awt.Color(0, 1, 248));
         btn_Nuevo.setForeground(new java.awt.Color(255, 255, 255));
         btn_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/libro24px.png"))); // NOI18N
         btn_Nuevo.setText("Nuevo");
+        btn_Nuevo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_Folio.setBackground(new java.awt.Color(0, 1, 248));
         btn_Folio.setForeground(new java.awt.Color(255, 255, 255));
         btn_Folio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/agregar-archivo.png"))); // NOI18N
         btn_Folio.setText("FOLIO");
+        btn_Folio.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

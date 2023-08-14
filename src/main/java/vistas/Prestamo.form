@@ -109,6 +109,9 @@
               <Image iconType="3" name="/buscar.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Buscar"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Cursor de Mano"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -152,8 +155,8 @@
                     <Column editable="true" title="CANTIDAD" type="java.lang.Object"/>
                     <Column editable="true" title="FECHA PRESTAMO" type="java.lang.Object"/>
                     <Column editable="true" title="FECHA DEV" type="java.lang.Object"/>
-                    <Column editable="true" title="ADEUDO" type="java.lang.Object"/>
                     <Column editable="true" title="ID USUARIO" type="java.lang.Object"/>
+                    <Column editable="true" title="ADEUDO" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -212,6 +215,9 @@
               <Image iconType="3" name="/borrar24px.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Eliminar"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Cursor de Mano"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -229,6 +235,9 @@
               <Image iconType="3" name="/libro24px.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nuevo"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Cursor de Mano"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -246,6 +255,9 @@
               <Image iconType="3" name="/agregar-archivo.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="FOLIO"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Cursor de Mano"/>
+            </Property>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

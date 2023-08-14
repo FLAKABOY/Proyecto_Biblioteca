@@ -921,7 +921,7 @@ public class Controlador implements ActionListener, KeyListener {
                 if(!logIn.txt_user.getText().isEmpty() && !logIn.txt_pass.getText().isEmpty()){
                     //Mandar a llamar el metodo de login
                     if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getPassword())){
-                        JOptionPane.showMessageDialog(null, "Ingreso exitoso");
+                        //Mostrar el apartado funcional de reportes
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Usuario o contraseñaincorrectos.");
