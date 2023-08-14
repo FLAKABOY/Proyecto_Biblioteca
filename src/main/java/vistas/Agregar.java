@@ -59,7 +59,7 @@ public class Agregar extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 809, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,9 +99,9 @@ public class Agregar extends javax.swing.JPanel {
             .addGroup(bgLayout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addComponent(btn_Admin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(29, 29, 29)
                 .addComponent(btn_Autor)
-                .addGap(80, 80, 80)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addComponent(btn_Editorial)
                 .addGap(88, 88, 88)
                 .addComponent(btn_Genero)

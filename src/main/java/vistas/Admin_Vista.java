@@ -83,26 +83,31 @@ public class Admin_Vista extends javax.swing.JPanel {
         btn_prestamoVencido.setForeground(new java.awt.Color(255, 255, 255));
         btn_prestamoVencido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fecha-de-vencimiento.png"))); // NOI18N
         btn_prestamoVencido.setText("Prestamos vencidos");
+        btn_prestamoVencido.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_usuarioMasPrestamos.setBackground(new java.awt.Color(0, 1, 248));
         btn_usuarioMasPrestamos.setForeground(new java.awt.Color(255, 255, 255));
         btn_usuarioMasPrestamos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/usuario_mas_prestamo.png"))); // NOI18N
         btn_usuarioMasPrestamos.setText("Usuario con mas prestamos");
+        btn_usuarioMasPrestamos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_adeudoPendiente.setBackground(new java.awt.Color(0, 1, 248));
         btn_adeudoPendiente.setForeground(new java.awt.Color(255, 255, 255));
         btn_adeudoPendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/atrasado.png"))); // NOI18N
         btn_adeudoPendiente.setText("Adeudos Pendientes");
+        btn_adeudoPendiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_historial.setBackground(new java.awt.Color(0, 1, 248));
         btn_historial.setForeground(new java.awt.Color(255, 255, 255));
         btn_historial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/historial.png"))); // NOI18N
         btn_historial.setText("Historial");
+        btn_historial.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btn_agregar.setBackground(new java.awt.Color(0, 1, 248));
         btn_agregar.setForeground(new java.awt.Color(255, 255, 255));
         btn_agregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/agregar.png"))); // NOI18N
         btn_agregar.setText("Añadir");
+        btn_agregar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         tbl_busqueda.setBackground(new java.awt.Color(255, 255, 255));
         tbl_busqueda.setModel(new javax.swing.table.DefaultTableModel(
@@ -131,8 +136,11 @@ public class Admin_Vista extends javax.swing.JPanel {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Fin");
 
+        btn_buscarPorFecha.setBackground(new java.awt.Color(0, 1, 248));
+        btn_buscarPorFecha.setForeground(new java.awt.Color(255, 255, 255));
         btn_buscarPorFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lupa.png"))); // NOI18N
         btn_buscarPorFecha.setText("Buscar");
+        btn_buscarPorFecha.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);

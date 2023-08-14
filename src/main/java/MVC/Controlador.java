@@ -65,6 +65,7 @@ public class Controlador implements ActionListener, KeyListener {
     private LogIn logIn;
     private Admin_Vista adminVista;
     private Agregar agregarPanel;
+    private Agregar_Admin agregarAdmin;
 
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -104,6 +105,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.logIn = new LogIn();
         this.adminVista = new Admin_Vista();
         this.agregarPanel = new Agregar();
+        this.agregarAdmin = new Agregar_Admin();
         
 
         //Botones del Dashjboard
@@ -277,6 +279,9 @@ public class Controlador implements ActionListener, KeyListener {
         //KeyListener para los TextField de el panel de Libros Borrar
         this.librosBorrar.txt_Bid.addKeyListener(this);
         this.librosBorrar.txt_Bname.addKeyListener(this);
+        
+        //KeyListener para los TextField de el panel de Admin_Vista
+        this.adminVista.txt_idUsuario.addKeyListener(this);
 
     }
 
@@ -942,6 +947,7 @@ public class Controlador implements ActionListener, KeyListener {
                     //Mandar a llamar el metodo de login
                     if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getPassword())){
                         //Mostrar el apartado funcional de reportes
+                        vista.content = vista(adminVista);
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Usuario o contraseñaincorrectos.");
@@ -958,6 +964,107 @@ public class Controlador implements ActionListener, KeyListener {
         if(adminVista.btn_adeudoPendiente == evento.getSource()){
             try{
                 //Llamar al metodo con el procedimiento almacenado que muestre los adeudos pendientes
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(adminVista.btn_agregar == evento.getSource()){
+            try{
+                //Mostrar el panel de seleccion para agregar
+                vista.content = vista(agregarPanel);
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(adminVista.btn_buscarPorFecha == evento.getSource()){
+            try{
+                //Hacer la busqueda por fecha dependiendo de los datos que ingrese
+                if(!adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString().isEmpty()){
+                    //Hacer la busqueda de fecha inicio en adelante
+                }
+                else if(!adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString().isEmpty()){
+                    //Buscar prestamos poniendo como limite una fecha
+                }
+                else if(!adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString().isEmpty() && !adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString().isEmpty()){
+                    //Hacer busqueda entre ambos rango de fecha
+                }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(adminVista.btn_historial == evento.getSource()){
+            try{
+                //Llamar al metodo ára mostrar todos lo prestamos de un usuario
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(adminVista.btn_prestamoVencido == evento.getSource()){
+            try{
+                //Llamar al metodo para mostrar todos los prestamos vencidos
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(adminVista.btn_usuarioMasPrestamos == evento.getSource()){
+            try{
+                //Llamar al metodo que muestra el usuario con mas prestamos
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        //Apartado para el panel de añadir
+        if(agregarPanel.btn_Admin == evento.getSource()){
+            try{
+                //Llamar aMostrar el panel para agregar un usuario
+                vista.content = vista(agregarAdmin);
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarPanel.btn_Autor == evento.getSource()){
+            try{
+                //Llamar al metodo para mostrar el panel de agregar un nuevo autor
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarPanel.btn_Editorial == evento.getSource()){
+            try{
+                //Llamar al metodo para mostrar el panel de agregar editorial
+                
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarPanel.btn_Genero == evento.getSource()){
+            try{
+                //Llamar al metodo para mostrar el panel de agregar Genero
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarPanel.btn_Regresar == evento.getSource()){
+            try{
+                //Regresar al panel principal de admin
+                vista.content = vista(adminVista);
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para el panel de Agregar un nuevo administrador
+        if(agregarAdmin.btn_agregar == evento.getSource()){
+            try{
+                //Llamar al metodo para insertar un administrador en la tabla
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarAdmin.btn_Regresar == evento.getSource()){
+            try{
+                //Regresar al panel de añadir
+                vista.content = vista(agregarPanel);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1262,6 +1369,13 @@ public class Controlador implements ActionListener, KeyListener {
             if (librosBorrar.txt_Bname.getText().length() >= 100) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+        
+        //Caja de texto de la vista de admin
+        if (adminVista.txt_idUsuario == evento.getSource()){
+            if (c < '0' || c > '9') {
                 evento.consume();
             }
         }
