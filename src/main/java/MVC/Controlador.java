@@ -60,6 +60,9 @@ public class Controlador implements ActionListener, KeyListener {
     private Libros_Nuevos librosNuevos;
     private Libros_Editar librosEditar;
     private Libros_Borrar librosBorrar;
+    
+    //Declarar todo lo de Reportes
+    private LogIn logIn;
 
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -94,6 +97,9 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosNuevos = new Libros_Nuevos();
         this.librosEditar = new Libros_Editar();
         this.librosBorrar = new Libros_Borrar();
+        
+        //Crear todo lo de reportes
+        this.logIn = new LogIn();
 
         //Botones del Dashjboard
         this.vista.btn_home.addActionListener(this);
@@ -177,6 +183,9 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosBorrar.btn_Eliminar.addActionListener(this);
         this.librosBorrar.btn_Bid.addActionListener(this);
         this.librosBorrar.btn_Bname.addActionListener(this);
+        
+        //Botones para el Panel de Login
+        this.logIn.btn_login.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -329,7 +338,7 @@ public class Controlador implements ActionListener, KeyListener {
         else if (vista.btn_reportes == evento.getSource()) {//Hace falta el panel de reportes
             try {
                 limpiarTexto();
-                //vista.content = vista(new Usuarios());
+                vista.content = vista(logIn);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -900,9 +909,31 @@ public class Controlador implements ActionListener, KeyListener {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
+        
+        //
 
         /*Apatado para la configuracion del panel de Reportes*/
         //Hacer los botones de el panel de Reportes\\
+        
+        if(logIn.btn_login == evento.getSource()){
+            try{
+                //Validar que los campos no esten vacios
+                if(!logIn.txt_user.getText().isEmpty() && !logIn.txt_pass.getText().isEmpty()){
+                    //Mandar a llamar el metodo de login
+                    if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getPassword())){
+                        JOptionPane.showMessageDialog(null, "Ingreso exitoso");
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Usuario o contraseñaincorrectos.");
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
+                }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
     }//Llave del metodo actionPerformed
 
     /*Sobreescribir todos los metodos los metodos abtractosos de la interface

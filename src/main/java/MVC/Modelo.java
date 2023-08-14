@@ -6,6 +6,10 @@
  */
 package MVC;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -1873,12 +1877,63 @@ public class Modelo {
             // Manejo de excepciones en caso de algún error en la base de datos
         }
     }
-    
-    //Metodo para validar usuario y contraseña para ingresar a reportes
-//    public boolean void logIn(String usuario, String pass){
-//        
-//        return;
-//    }
+
+    // Método para validar usuario y contraseña para ingresar
+    public static boolean logIn(String usuario, char[] pass) {
+        // Encripta la contraseña ingresada usando el método hashPassword
+        String hashedPass = hashPassword(pass);
+
+        // Consulta SQL para verificar la existencia del usuario y contraseña en la tabla admins
+        String query = "SELECT COUNT(*) AS count FROM admins WHERE usuario = ? AND contra = ?";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            // Establecer los valores de los parámetros en la consulta preparada
+            preparedStatement.setString(1, usuario);
+            preparedStatement.setString(2, hashedPass);
+
+            System.out.println(preparedStatement);
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt("count");
+                    // Retorna true si se encontró el usuario y contraseña
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Retorna false si ocurrió un error o no se encontró el usuario
+        return false;
+    }
+
+    public static String hashPassword(char[] pass) {
+        try {
+            // Inicializa el objeto MessageDigest con el algoritmo SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Convierte los caracteres en el arreglo a bytes utilizando UTF-8
+            byte[] passBytes = new String(pass).getBytes(StandardCharsets.UTF_8);
+
+            // Calcula el hash de los bytes de la contraseña
+            byte[] hash = digest.digest(passBytes);
+
+            // Convierte el hash en una representación hexadecimal
+            StringBuilder hashedPassword = new StringBuilder();
+            for (byte b : hash) {
+                hashedPassword.append(String.format("%02x", b));
+            }
+
+            // Retorna la contraseña encriptada
+            return hashedPassword.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        // Retorna null si ocurrió un error
+        return null;
+    }
 
     //Subclase para los usuarios
     public static class Usuario {
