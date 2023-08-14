@@ -1935,6 +1935,66 @@ public class Modelo {
         return null;
     }
 
+    //Mostrar prestamos vencidos
+    public static JTable mostrarPrestamosVencidos(JTable tabla) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID Prestamo");
+        modeloTabla.addColumn("Fecha Devolución");
+        modeloTabla.addColumn("Monto Adeudo");
+
+        // Llamar al procedimiento almacenado para obtener los préstamos vencidos
+        String procedimiento = "CALL MostrarPrestamosVencidos()";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(procedimiento);  ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Iterar a través de los resultados y agregarlos a la tabla
+            while (resultSet.next()) {
+                int idPrestamo = resultSet.getInt("idPrestamo");
+                String fechaDev = resultSet.getString("fechaDev");
+                double montoAdeudo = resultSet.getDouble("adeudo");
+                modeloTabla.addRow(new Object[]{idPrestamo, fechaDev, montoAdeudo});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
+    //Mostrar ususario con mas prestamos
+    public static JTable mostrarUsuarioConMasPrestamos(JTable tabla) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("Usuario");
+        modeloTabla.addColumn("Número de Prestamos");
+
+        // Llamar al procedimiento almacenado para obtener el usuario con más préstamos
+        String procedimiento = "CALL UsuarioConMasPrestamos()";
+
+        try ( Connection connection = Modelo.conectar();
+                PreparedStatement preparedStatement = connection.prepareStatement(procedimiento);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Obtener el resultado del procedimiento (debe ser solo una fila)
+            if (resultSet.next()) {
+                String usuario = resultSet.getString("Usuario");
+                int numeroPrestamos = resultSet.getInt("Numero_Prestamos");
+                modeloTabla.addRow(new Object[]{usuario, numeroPrestamos});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
     //Subclase para los usuarios
     public static class Usuario {
 

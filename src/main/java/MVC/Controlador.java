@@ -1002,6 +1002,7 @@ public class Controlador implements ActionListener, KeyListener {
         else if(adminVista.btn_prestamoVencido == evento.getSource()){
             try{
                 //Llamar al metodo para mostrar todos los prestamos vencidos
+                Modelo.mostrarPrestamosVencidos(adminVista.tbl_busqueda);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1009,10 +1010,13 @@ public class Controlador implements ActionListener, KeyListener {
         else if(adminVista.btn_usuarioMasPrestamos == evento.getSource()){
             try{
                 //Llamar al metodo que muestra el usuario con mas prestamos
+                Modelo.mostrarUsuarioConMasPrestamos(adminVista.tbl_busqueda);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
+        
+        
         //Apartado para el panel de añadir
         if(agregarPanel.btn_Admin == evento.getSource()){
             try{
