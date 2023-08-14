@@ -63,6 +63,8 @@ public class Controlador implements ActionListener, KeyListener {
     
     //Declarar todo lo de Reportes
     private LogIn logIn;
+    private Admin_Vista adminVista;
+    private Agregar agregarPanel;
 
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -100,6 +102,9 @@ public class Controlador implements ActionListener, KeyListener {
         
         //Crear todo lo de reportes
         this.logIn = new LogIn();
+        this.adminVista = new Admin_Vista();
+        this.agregarPanel = new Agregar();
+        
 
         //Botones del Dashjboard
         this.vista.btn_home.addActionListener(this);
@@ -186,6 +191,21 @@ public class Controlador implements ActionListener, KeyListener {
         
         //Botones para el Panel de Login
         this.logIn.btn_login.addActionListener(this);
+        
+        //Botones de la vista admin
+        this.adminVista.btn_adeudoPendiente.addActionListener(this);
+        this.adminVista.btn_agregar.addActionListener(this);
+        this.adminVista.btn_buscarPorFecha.addActionListener(this);
+        this.adminVista.btn_historial.addActionListener(this);
+        this.adminVista.btn_prestamoVencido.addActionListener(this);
+        this.adminVista.btn_usuarioMasPrestamos.addActionListener(this);
+        
+        //Botones del panel Agregar
+        this.agregarPanel.btn_Admin.addActionListener(this);
+        this.agregarPanel.btn_Autor.addActionListener(this);
+        this.agregarPanel.btn_Editorial.addActionListener(this);
+        this.agregarPanel.btn_Genero.addActionListener(this);
+        this.agregarPanel.btn_Regresar.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -930,6 +950,14 @@ public class Controlador implements ActionListener, KeyListener {
                 else{
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        if(adminVista.btn_adeudoPendiente == evento.getSource()){
+            try{
+                //Llamar al metodo con el procedimiento almacenado que muestre los adeudos pendientes
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }

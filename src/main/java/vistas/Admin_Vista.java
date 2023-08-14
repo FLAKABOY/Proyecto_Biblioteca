@@ -1,8 +1,8 @@
 /*
  * Rendon Estrada Jorge
  * 04/07/2023
- * Descripcion: Panel de Usuarios_Nuevo que se muestra en el Dashboard 
- * Contiene la tabla de los prestamos y los botones con las acciones
+ * Descripcion: Panel de la vista de administrador con conultas a datos
+ * especificos de la base de datos
  */
 
 package vistas;
@@ -21,14 +21,20 @@ public class Admin_Vista extends javax.swing.JPanel {
         //Mando a llamar el metodo del LOOK & FEEL
         IniStyles();
         //
-       
+       TextPrompt txtU = new TextPrompt("ID de usuario", txt_idUsuario);
     }
     
     //Metodo que contiene los estilos del LOOK & FEEL
      private void IniStyles(){
-         
-        
-        
+         //Estilos de las cajas de texto
+         txt_idUsuario.putClientProperty( "JComponent.roundRect", true );
+         //Estilo del boton
+         btn_adeudoPendiente.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_agregar.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_buscarPorFecha.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_historial.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_prestamoVencido.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_usuarioMasPrestamos.putClientProperty( "JButton.buttonType", "roundRect" );
      }
      
     /** This method is called from within the constructor to
@@ -42,20 +48,20 @@ public class Admin_Vista extends javax.swing.JPanel {
 
         bg = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btn_prestamoVencido = new javax.swing.JButton();
+        btn_usuarioMasPrestamos = new javax.swing.JButton();
+        btn_adeudoPendiente = new javax.swing.JButton();
+        btn_historial = new javax.swing.JButton();
+        btn_agregar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbl_users = new javax.swing.JTable();
+        tbl_busqueda = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
+        jdc_fechaInicio = new com.toedter.calendar.JDateChooser();
+        jdc_fechaFin = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        btn_buscarPorFecha = new javax.swing.JButton();
+        txt_idUsuario = new javax.swing.JTextField();
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setForeground(new java.awt.Color(0, 0, 0));
@@ -73,33 +79,33 @@ public class Admin_Vista extends javax.swing.JPanel {
             .addGap(0, 51, Short.MAX_VALUE)
         );
 
-        jButton1.setBackground(new java.awt.Color(0, 1, 248));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fecha-de-vencimiento.png"))); // NOI18N
-        jButton1.setText("Prestamos vencidos");
+        btn_prestamoVencido.setBackground(new java.awt.Color(0, 1, 248));
+        btn_prestamoVencido.setForeground(new java.awt.Color(255, 255, 255));
+        btn_prestamoVencido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fecha-de-vencimiento.png"))); // NOI18N
+        btn_prestamoVencido.setText("Prestamos vencidos");
 
-        jButton2.setBackground(new java.awt.Color(0, 1, 248));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/usuario_mas_prestamo.png"))); // NOI18N
-        jButton2.setText("Usuario con mas prestamos");
+        btn_usuarioMasPrestamos.setBackground(new java.awt.Color(0, 1, 248));
+        btn_usuarioMasPrestamos.setForeground(new java.awt.Color(255, 255, 255));
+        btn_usuarioMasPrestamos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/usuario_mas_prestamo.png"))); // NOI18N
+        btn_usuarioMasPrestamos.setText("Usuario con mas prestamos");
 
-        jButton3.setBackground(new java.awt.Color(0, 1, 248));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/atrasado.png"))); // NOI18N
-        jButton3.setText("Adeudos Pendientes");
+        btn_adeudoPendiente.setBackground(new java.awt.Color(0, 1, 248));
+        btn_adeudoPendiente.setForeground(new java.awt.Color(255, 255, 255));
+        btn_adeudoPendiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/atrasado.png"))); // NOI18N
+        btn_adeudoPendiente.setText("Adeudos Pendientes");
 
-        jButton4.setBackground(new java.awt.Color(0, 1, 248));
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/historial.png"))); // NOI18N
-        jButton4.setText("Historial");
+        btn_historial.setBackground(new java.awt.Color(0, 1, 248));
+        btn_historial.setForeground(new java.awt.Color(255, 255, 255));
+        btn_historial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/historial.png"))); // NOI18N
+        btn_historial.setText("Historial");
 
-        jButton5.setBackground(new java.awt.Color(0, 1, 248));
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/agregar.png"))); // NOI18N
-        jButton5.setText("Añadir");
+        btn_agregar.setBackground(new java.awt.Color(0, 1, 248));
+        btn_agregar.setForeground(new java.awt.Color(255, 255, 255));
+        btn_agregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/agregar.png"))); // NOI18N
+        btn_agregar.setText("Añadir");
 
-        tbl_users.setBackground(new java.awt.Color(255, 255, 255));
-        tbl_users.setModel(new javax.swing.table.DefaultTableModel(
+        tbl_busqueda.setBackground(new java.awt.Color(255, 255, 255));
+        tbl_busqueda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -110,14 +116,14 @@ public class Admin_Vista extends javax.swing.JPanel {
 
             }
         ));
-        jScrollPane1.setViewportView(tbl_users);
+        jScrollPane1.setViewportView(tbl_busqueda);
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Busqueda por fecha");
 
-        jDateChooser1.setDateFormatString("yyyy/MM/dd");
+        jdc_fechaInicio.setDateFormatString("yyyy/MM/dd");
 
-        jDateChooser2.setDateFormatString("yyyy/MM/dd");
+        jdc_fechaFin.setDateFormatString("yyyy/MM/dd");
 
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Inicio");
@@ -125,8 +131,8 @@ public class Admin_Vista extends javax.swing.JPanel {
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Fin");
 
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lupa.png"))); // NOI18N
-        jButton6.setText("Buscar");
+        btn_buscarPorFecha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lupa.png"))); // NOI18N
+        btn_buscarPorFecha.setText("Buscar");
 
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
@@ -143,11 +149,11 @@ public class Admin_Vista extends javax.swing.JPanel {
                         .addGap(16, 16, 16)
                         .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(bgLayout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(btn_prestamoVencido)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2)
+                                .addComponent(btn_usuarioMasPrestamos)
                                 .addGap(66, 66, 66)
-                                .addComponent(jButton3)
+                                .addComponent(btn_adeudoPendiente)
                                 .addGap(56, 56, 56))
                             .addGroup(bgLayout.createSequentialGroup()
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,19 +163,19 @@ public class Admin_Vista extends javax.swing.JPanel {
                                             .addGroup(bgLayout.createSequentialGroup()
                                                 .addComponent(jLabel2)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(jdc_fechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(bgLayout.createSequentialGroup()
                                                 .addComponent(jLabel3)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jdc_fechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton6)
+                                        .addComponent(btn_buscarPorFecha)
                                         .addGap(77, 77, 77)
-                                        .addComponent(jButton5)))
+                                        .addComponent(btn_agregar)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField1))
+                                    .addComponent(btn_historial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txt_idUsuario))
                                 .addGap(110, 110, 110))))))
         );
         bgLayout.setVerticalGroup(
@@ -178,9 +184,9 @@ public class Admin_Vista extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btn_prestamoVencido)
+                    .addComponent(btn_usuarioMasPrestamos)
+                    .addComponent(btn_adeudoPendiente))
                 .addGap(18, 18, 18)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bgLayout.createSequentialGroup()
@@ -189,23 +195,23 @@ public class Admin_Vista extends javax.swing.JPanel {
                             .addGroup(bgLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jdc_fechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2))
                                 .addGap(23, 23, 23)
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jdc_fechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton6)
-                                    .addComponent(jButton5))
+                                    .addComponent(btn_buscarPorFecha)
+                                    .addComponent(btn_agregar))
                                 .addGap(45, 45, 45))))
                     .addGroup(bgLayout.createSequentialGroup()
-                        .addComponent(jButton4)
+                        .addComponent(btn_historial)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt_idUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -226,21 +232,21 @@ public class Admin_Vista extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bg;
-    public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
-    public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton4;
-    public javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
+    public javax.swing.JButton btn_adeudoPendiente;
+    public javax.swing.JButton btn_agregar;
+    public javax.swing.JButton btn_buscarPorFecha;
+    public javax.swing.JButton btn_historial;
+    public javax.swing.JButton btn_prestamoVencido;
+    public javax.swing.JButton btn_usuarioMasPrestamos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTextField jTextField1;
-    public javax.swing.JTable tbl_users;
+    public com.toedter.calendar.JDateChooser jdc_fechaFin;
+    public com.toedter.calendar.JDateChooser jdc_fechaInicio;
+    public javax.swing.JTable tbl_busqueda;
+    public javax.swing.JTextField txt_idUsuario;
     // End of variables declaration//GEN-END:variables
 
 }

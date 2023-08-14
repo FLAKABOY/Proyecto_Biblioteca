@@ -27,9 +27,10 @@ public class LogIn extends javax.swing.JPanel {
     
     //Metodo que contiene los estilos del LOOK & FEEL
      private void IniStyles(){
-         
+         //Estilos de las cajas de texto
          txt_user.putClientProperty( "JComponent.roundRect", true );
          txt_pass.putClientProperty( "JComponent.roundRect", true );
+         //Estilo del boton
          btn_login.putClientProperty( "JButton.buttonType", "roundRect" );
         
         
