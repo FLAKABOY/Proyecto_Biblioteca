@@ -17,11 +17,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 //Importar el JFrame principal
 import pantallas.Dashjboard;
@@ -61,7 +66,7 @@ public class Controlador implements ActionListener, KeyListener {
     private Libros_Nuevos librosNuevos;
     private Libros_Editar librosEditar;
     private Libros_Borrar librosBorrar;
-    
+
     //Declarar todo lo de Reportes
     private LogIn logIn;
     private Admin_Vista adminVista;
@@ -70,7 +75,7 @@ public class Controlador implements ActionListener, KeyListener {
     private Agregar_Autor agregarAutor;
     private Agregar_Editorial agregarEditorial;
     private Agregar_Genero agregarGenero;
-    
+
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
     correspondientes, el Modelo se encargara de todo el funcionamiento y 
@@ -104,7 +109,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosNuevos = new Libros_Nuevos();
         this.librosEditar = new Libros_Editar();
         this.librosBorrar = new Libros_Borrar();
-        
+
         //Crear todo lo de reportes
         this.logIn = new LogIn();
         this.adminVista = new Admin_Vista();
@@ -113,7 +118,6 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarAutor = new Agregar_Autor();
         this.agregarEditorial = new Agregar_Editorial();
         this.agregarGenero = new Agregar_Genero();
-        
 
         //Botones del Dashjboard
         this.vista.btn_home.addActionListener(this);
@@ -197,10 +201,10 @@ public class Controlador implements ActionListener, KeyListener {
         this.librosBorrar.btn_Eliminar.addActionListener(this);
         this.librosBorrar.btn_Bid.addActionListener(this);
         this.librosBorrar.btn_Bname.addActionListener(this);
-        
+
         //Botones para el Panel de Login
         this.logIn.btn_login.addActionListener(this);
-        
+
         //Botones de la vista admin
         this.adminVista.btn_adeudoPendiente.addActionListener(this);
         this.adminVista.btn_agregar.addActionListener(this);
@@ -208,26 +212,27 @@ public class Controlador implements ActionListener, KeyListener {
         this.adminVista.btn_historial.addActionListener(this);
         this.adminVista.btn_prestamoVencido.addActionListener(this);
         this.adminVista.btn_usuarioMasPrestamos.addActionListener(this);
-        
+        this.adminVista.btn_Exportar.addActionListener(this);
+
         //Botones del panel Agregar
         this.agregarPanel.btn_Admin.addActionListener(this);
         this.agregarPanel.btn_Autor.addActionListener(this);
         this.agregarPanel.btn_Editorial.addActionListener(this);
         this.agregarPanel.btn_Genero.addActionListener(this);
         this.agregarPanel.btn_Regresar.addActionListener(this);
-        
+
         //Botones de agregar administrador
         this.agregarAdmin.btn_agregar.addActionListener(this);
         this.agregarAdmin.btn_Regresar.addActionListener(this);
-        
+
         //Botones para agregar Autor
         this.agregarAutor.btn_agregar.addActionListener(this);
         this.agregarAutor.btn_Regresar.addActionListener(this);
-        
+
         //Botones para Editorial
         this.agregarEditorial.btn_agregar.addActionListener(this);
         this.agregarEditorial.btn_Regresar.addActionListener(this);
-        
+
         //Botones de Genero
         this.agregarGenero.btn_agregar.addActionListener(this);
         this.agregarGenero.btn_Regresar.addActionListener(this);
@@ -302,14 +307,14 @@ public class Controlador implements ActionListener, KeyListener {
         //KeyListener para los TextField de el panel de Libros Borrar
         this.librosBorrar.txt_Bid.addKeyListener(this);
         this.librosBorrar.txt_Bname.addKeyListener(this);
-        
+
         //KeyListener para los TextField de el panel de Admin_Vista
         this.adminVista.txt_idUsuario.addKeyListener(this);
-        
+
         //KeyListener para los TextField de el panel de Agregar Autor
         this.agregarAutor.txt_Autor.addKeyListener(this);
         this.agregarAutor.txt_nacionalidad.addKeyListener(this);
-        
+
         //KeyListener para los TextField de el panel de Agregar Editorial
         this.agregarEditorial.txt_Editorial.addKeyListener(this);
 
@@ -787,19 +792,15 @@ public class Controlador implements ActionListener, KeyListener {
                         Modelo.updateFolio(Integer.parseInt(devolucionesEditar.txt_IdPrestamo.getText()),
                                 devolucionesEditar.cbx_Libro.getSelectedItem().toString(),
                                 true);
-                       //Regresar al panle principal de devoluciones
-                       vista.content = vista(devolucionesPanel);
-                       Modelo.mostrarFolios(devolucionesPanel.tbl_Devoluciones);
-                       limpiarTexto();
+                        //Regresar al panle principal de devoluciones
+                        vista.content = vista(devolucionesPanel);
+                        Modelo.mostrarFolios(devolucionesPanel.tbl_Devoluciones);
+                        limpiarTexto();
                     }
-                }
-                
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes correctamente (ID,libro seleccionado y estado)");
                 }
-                
 
-                
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -810,7 +811,7 @@ public class Controlador implements ActionListener, KeyListener {
                         devolucionesEditar.tbl_Devoluciones_Editar,
                         devolucionesEditar.txt_Nombrelibro.getText(),
                         devolucionesEditar.cbx_Libro);
-                
+
                 Modelo.llenarComboBoxFolioPorTitulo(devolucionesEditar.cbx_Libro,
                         devolucionesEditar.txt_Nombrelibro.getText());
             } catch (RuntimeException e) {
@@ -964,182 +965,193 @@ public class Controlador implements ActionListener, KeyListener {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //
 
         /*Apatado para la configuracion del panel de Reportes*/
         //Hacer los botones de el panel de Reportes\\
-        
-        if(logIn.btn_login == evento.getSource()){
-            try{
+        if (logIn.btn_login == evento.getSource()) {
+            try {
                 //Validar que los campos no esten vacios
-                if(!logIn.txt_user.getText().isEmpty() && !logIn.txt_pass.getText().isEmpty()){
+                if (!logIn.txt_user.getText().isEmpty() && !logIn.txt_pass.getText().isEmpty()) {
                     //Mandar a llamar el metodo de login
-                    if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getText())){
+                    if (Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getText())) {
                         //Mostrar el apartado funcional de reportes
                         vista.content = vista(adminVista);
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(null, "Usuario o contraseñaincorrectos.");
                         logIn.txt_pass.setText("");
                     }
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
-        if(adminVista.btn_adeudoPendiente == evento.getSource()){
-            try{
+
+        if (adminVista.btn_adeudoPendiente == evento.getSource()) {
+            try {
                 //Llamar al metodo con el procedimiento almacenado que muestre los adeudos pendientes
                 Modelo.mostrarAdeudosPendientes(adminVista.tbl_busqueda);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(adminVista.btn_agregar == evento.getSource()){
-            try{
+        } else if (adminVista.btn_agregar == evento.getSource()) {
+            try {
                 //Mostrar el panel de seleccion para agregar
                 vista.content = vista(agregarPanel);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(adminVista.btn_buscarPorFecha == evento.getSource()){
-            try{
+        } else if (adminVista.btn_buscarPorFecha == evento.getSource()) {
+            try {
                 //Hacer la busqueda por fecha dependiendo de los datos que ingrese
-                if(adminVista.jdc_fechaInicio.getDate() != null && adminVista.jdc_fechaFin.getDate() != null){
+                if (adminVista.jdc_fechaInicio.getDate() != null && adminVista.jdc_fechaFin.getDate() != null) {
                     //Buscar dentro del rango de fecha
                     System.out.println("Rangofecha");
-                   adminVista.tbl_busqueda = Modelo.mostrarPrestamosPorFecha(adminVista.tbl_busqueda, ((JTextField)adminVista.jdc_fechaInicio.getDateEditor().getUiComponent()).getText() , ((JTextField)adminVista.jdc_fechaFin.getDateEditor().getUiComponent()).getText());
+                    adminVista.tbl_busqueda = Modelo.mostrarPrestamosPorFecha(adminVista.tbl_busqueda, ((JTextField) adminVista.jdc_fechaInicio.getDateEditor().getUiComponent()).getText(), ((JTextField) adminVista.jdc_fechaFin.getDateEditor().getUiComponent()).getText());
 
-
-
-                }
-                else if(adminVista.jdc_fechaFin.getDate() != null){
+                } else if (adminVista.jdc_fechaFin.getDate() != null) {
                     //Buscar prestamos poniendo como limite una fecha
                     System.out.println("FechaFin");
                     Modelo.buscarFechaFin(adminVista.tbl_busqueda, adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString());
-                }
-                else if(adminVista.jdc_fechaInicio.getDate() != null){
+                } else if (adminVista.jdc_fechaInicio.getDate() != null) {
                     //Hacer la busqueda de fecha inicio en adelante
                     System.out.println("FechaInicio");
                     Modelo.buscarFechaInicio(adminVista.tbl_busqueda, adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString());
                 }
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(adminVista.btn_historial == evento.getSource()){
-            try{
+        } else if (adminVista.btn_historial == evento.getSource()) {
+            try {
                 //Llamar al metodo ára mostrar todos lo prestamos de un usuario
                 Modelo.mostrarHistorial(adminVista.tbl_busqueda, Integer.parseInt(adminVista.txt_idUsuario.getText()));
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(adminVista.btn_prestamoVencido == evento.getSource()){
-            try{
+        } else if (adminVista.btn_prestamoVencido == evento.getSource()) {
+            try {
                 //Llamar al metodo para mostrar todos los prestamos vencidos
                 Modelo.mostrarPrestamosVencidos(adminVista.tbl_busqueda);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(adminVista.btn_usuarioMasPrestamos == evento.getSource()){
-            try{
+        } else if (adminVista.btn_usuarioMasPrestamos == evento.getSource()) {
+            try {
                 //Llamar al metodo que muestra el usuario con mas prestamos
                 Modelo.mostrarUsuarioConMasPrestamos(adminVista.tbl_busqueda);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        } else if (adminVista.btn_Exportar == evento.getSource()) {
+            try {
+                //Intentar hacer el exporter de la tabla
+                //SE CONVIERTE EL JTABLE DE LA CONSULTA A UN ARCHIVO DE EXCEL
+                if (adminVista.tbl_busqueda.getRowCount() > 0) {
+                    JFileChooser chooser = new JFileChooser();
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos de excel", "xls");
+                    chooser.setFileFilter(filter);
+                    chooser.setDialogTitle("Guardar archivo");
+                    chooser.setAcceptAllFileFilterUsed(false);
+                    if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                        List tb = new ArrayList();
+                        List nom = new ArrayList();
+                        tb.add(adminVista.tbl_busqueda);
+                        nom.add("Registro");
+                        String file = chooser.getSelectedFile().toString().concat(".xls");
+                        try {
+                            vistas.Exporter e = new Exporter(new File(file), tb, nom);
+                            if (e.export()) {
+                                JOptionPane.showMessageDialog(null, "Los datos fueron exportados a excel en el directorio seleccionado", "Mensaje de Informacion", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Hubo un error " + e.getMessage(), " Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No hay datos para exportar", "Mensaje de error", JOptionPane.ERROR_MESSAGE);
+                }
+            }catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
-        
+
         //Apartado para el panel de añadir
-        if(agregarPanel.btn_Admin == evento.getSource()){
-            try{
+        if (agregarPanel.btn_Admin == evento.getSource()) {
+            try {
                 //Llamar aMostrar el panel para agregar un usuario
                 vista.content = vista(agregarAdmin);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarPanel.btn_Autor == evento.getSource()){
-            try{
+        } else if (agregarPanel.btn_Autor == evento.getSource()) {
+            try {
                 //Llamar al metodo para mostrar el panel de agregar un nuevo autor
                 vista.content = vista(agregarAutor);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarPanel.btn_Editorial == evento.getSource()){
-            try{
+        } else if (agregarPanel.btn_Editorial == evento.getSource()) {
+            try {
                 //Llamar al metodo para mostrar el panel de agregar editorial
                 vista.content = vista(agregarEditorial);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarPanel.btn_Genero == evento.getSource()){
-            try{
+        } else if (agregarPanel.btn_Genero == evento.getSource()) {
+            try {
                 //Llamar al metodo para mostrar el panel de agregar Genero
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarPanel.btn_Regresar == evento.getSource()){
-            try{
+        } else if (agregarPanel.btn_Regresar == evento.getSource()) {
+            try {
                 //Regresar al panel principal de admin
                 vista.content = vista(adminVista);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado para el panel de Agregar un nuevo administrador
-        if(agregarAdmin.btn_agregar == evento.getSource()){
-            try{
+        if (agregarAdmin.btn_agregar == evento.getSource()) {
+            try {
                 //Validar que los campos no esten vacios
-                if(!agregarAdmin.txt_User.getText().isEmpty() && !agregarAdmin.txt_pass.getText().isEmpty() && !agregarAdmin.txt_Confirm.getText().isEmpty()){
+                if (!agregarAdmin.txt_User.getText().isEmpty() && !agregarAdmin.txt_pass.getText().isEmpty() && !agregarAdmin.txt_Confirm.getText().isEmpty()) {
                     //Validar que las contraseñas coincidan
-                    if(agregarAdmin.txt_pass.getText().equals(agregarAdmin.txt_Confirm.getText())){
+                    if (agregarAdmin.txt_pass.getText().equals(agregarAdmin.txt_Confirm.getText())) {
                         //Llamar al metodo para insertar un administrador en la tabla
                         Modelo.insertAdmin(agregarAdmin.txt_User.getText(), agregarAdmin.txt_pass.getText());
                         agregarAdmin.txt_User.setText("");
                         agregarAdmin.txt_pass.setText("");
                         agregarAdmin.txt_Confirm.setText("");
                         vista.content = vista(agregarPanel);
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
                     }
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
-                } 
-                
-            }catch(RuntimeException e){
+                }
+
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarAdmin.btn_Regresar == evento.getSource()){
-            try{
+        } else if (agregarAdmin.btn_Regresar == evento.getSource()) {
+            try {
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado para agregar Autor
-        if(agregarAutor.btn_agregar == evento.getSource()){
-            try{
+        if (agregarAutor.btn_agregar == evento.getSource()) {
+            try {
                 //Validar que los campos no esten vacios
-                if(!agregarAutor.txt_Autor.getText().isEmpty() && !agregarAutor.txt_nacionalidad.getText().isEmpty() && (agregarAutor.jdc_fechaNacimiento.getDate() != null)){
+                if (!agregarAutor.txt_Autor.getText().isEmpty() && !agregarAutor.txt_nacionalidad.getText().isEmpty() && (agregarAutor.jdc_fechaNacimiento.getDate() != null)) {
                     //Mandar a llamar al metodo para inserter el Autor
                     Modelo.insertAutor(agregarAutor.txt_Autor.getText(),
                             agregarAutor.txt_nacionalidad.getText(),
@@ -1148,73 +1160,67 @@ public class Controlador implements ActionListener, KeyListener {
                     agregarAutor.txt_nacionalidad.setText("");
                     agregarAutor.jdc_fechaNacimiento.setDateFormatString("");
                     vista.content = vista(agregarPanel);
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarAutor.btn_Regresar == evento.getSource()){
-            try{
+        } else if (agregarAutor.btn_Regresar == evento.getSource()) {
+            try {
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado para agregar Editorial
-        if(agregarEditorial.btn_agregar == evento.getSource()){
-            try{
+        if (agregarEditorial.btn_agregar == evento.getSource()) {
+            try {
                 //Validar que los campos no esten vacios
-                if(!agregarEditorial.txt_Editorial.getText().isEmpty()){
+                if (!agregarEditorial.txt_Editorial.getText().isEmpty()) {
                     //Mandar a llamar el metodo paar agregar Editorial
                     Modelo.insertEditorial(agregarEditorial.txt_Editorial.getText());
                     agregarEditorial.txt_Editorial.setText("");
                     vista.content = vista(agregarPanel);
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if( agregarEditorial.btn_Regresar == evento.getSource()){
-            try{
+        } else if (agregarEditorial.btn_Regresar == evento.getSource()) {
+            try {
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
                 agregarEditorial.txt_Editorial.setText("");
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
-        
+
         //Apartado de agregar Genero
-        if(agregarGenero.btn_agregar == evento.getSource()){
-            try{
+        if (agregarGenero.btn_agregar == evento.getSource()) {
+            try {
                 //Validar que los campos esten vacios
-                if(!agregarGenero.txt_Genero.getText().isEmpty()){
+                if (!agregarGenero.txt_Genero.getText().isEmpty()) {
                     //Mandar a llamr el metodo de agregar Genero
                     Modelo.insertGenero(agregarGenero.txt_Genero.getText());
                     agregarGenero.txt_Genero.setText("");
                     vista.content = vista(agregarPanel);
-                }
-                else{
+                } else {
                     JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
-        }
-        else if(agregarGenero.btn_Regresar == evento.getSource()){
-            try{
+        } else if (agregarGenero.btn_Regresar == evento.getSource()) {
+            try {
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
                 agregarEditorial.txt_Editorial.setText("");
-            }catch(RuntimeException e){
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
@@ -1521,51 +1527,49 @@ public class Controlador implements ActionListener, KeyListener {
                 evento.consume();
             }
         }
-        
+
         //Caja de texto de la vista de admin
-        if (adminVista.txt_idUsuario == evento.getSource()){
+        if (adminVista.txt_idUsuario == evento.getSource()) {
             if (c < '0' || c > '9') {
                 evento.consume();
             }
         }
-        
+
         //---Los administradores pueden tener cualquier caracter en usuario y contraseña---\\
-        
         //Cajas de texto para agregar autores
-        if(agregarAutor.txt_Autor == evento.getSource()){
+        if (agregarAutor.txt_Autor == evento.getSource()) {
             if (agregarAutor.txt_Autor.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
                 evento.consume();
             }
         }
-        
-        if(agregarAutor.txt_nacionalidad == evento.getSource()){
+
+        if (agregarAutor.txt_nacionalidad == evento.getSource()) {
             if (agregarAutor.txt_nacionalidad.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
                 evento.consume();
             }
         }
-        
+
         //Caja de texto agregar Editorial
-        if(agregarEditorial.txt_Editorial == evento.getSource()){
+        if (agregarEditorial.txt_Editorial == evento.getSource()) {
             if (agregarEditorial.txt_Editorial.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
                 evento.consume();
             }
         }
-        
+
         //Caja de texto genero
-        if(agregarGenero.txt_Genero == evento.getSource()){
+        if (agregarGenero.txt_Genero == evento.getSource()) {
             if (agregarGenero.txt_Genero.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
                 evento.consume();
             }
         }
-        
 
     }//Llave del metodo keyTyped
 
@@ -1613,7 +1617,7 @@ public class Controlador implements ActionListener, KeyListener {
         prestamoNuevoDatos.txt_Id.setText("");
         prestamoNuevoDatos.txt_Nom.setText("");
         prestamoNuevoDatos.txt_idUser.setText("");
-        
+
         //Apartado de Login
         logIn.txt_user.setText("");
         logIn.txt_pass.setText("");
@@ -1653,32 +1657,31 @@ public class Controlador implements ActionListener, KeyListener {
         librosEditar.cb_autor.removeAllItems();
         librosEditar.cb_editorial.removeAllItems();
         librosEditar.cb_genero.removeAllItems();
-        
+
         //Limpiar las Tablas de los paneles secundarios
         vaciarTabla(usuarioB.tbl_users_borrar);
-        
+
         vaciarTabla(prestamoNuevo.tbl_Prestamo_Nuevo);
         vaciarTabla(prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos);
         vaciarTabla(prestamoNuevoGenerar.tbl_Prestamo_Nuevo_Generar);
         vaciarTabla(prestamoNuevoVincular.tbl_Prestamo_Nuevo_Vincular);
         vaciarTabla(prestamoEliminar.tbl_Prestamos_Eliminar);
-        
+
         vaciarTabla(devolucionesEditar.tbl_Devoluciones_Editar);
-        
+
         vaciarTabla(librosBorrar.tbl_Libros_Borrar);
-        
-        
+
         //prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos.setRowCount(0);
     }//Fin del metodo de limpiar los campos
 
-    
-    public void vaciarTabla(JTable tabla){
+    public void vaciarTabla(JTable tabla) {
         DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
 
         // Vaciar el modelo eliminando todas las filas
         modeloTabla.setRowCount(0);
-        
+
     }
+
     //Metodo para llenar los campos de editar usuario y sea mas facil la modificacion
     public void colocarDatosUserId(Usuario usuario) {
         usuario = Modelo.datosUser(Integer.parseInt(usuarioE.txt_Bid.getText()));
