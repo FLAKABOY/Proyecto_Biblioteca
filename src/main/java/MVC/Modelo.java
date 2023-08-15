@@ -1975,15 +1975,81 @@ public class Modelo {
         // Llamar al procedimiento almacenado para obtener el usuario con más préstamos
         String procedimiento = "CALL UsuarioConMasPrestamos()";
 
-        try ( Connection connection = Modelo.conectar();
-                PreparedStatement preparedStatement = connection.prepareStatement(procedimiento);
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(procedimiento);  ResultSet resultSet = preparedStatement.executeQuery()) {
 
             // Obtener el resultado del procedimiento (debe ser solo una fila)
             if (resultSet.next()) {
                 String usuario = resultSet.getString("Usuario");
                 int numeroPrestamos = resultSet.getInt("Numero_Prestamos");
                 modeloTabla.addRow(new Object[]{usuario, numeroPrestamos});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
+    public static JTable mostrarAdeudosPendientes(JTable tabla) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID Prestamo");
+        modeloTabla.addColumn("Usuario");
+        modeloTabla.addColumn("Adeudo");
+
+        // Llamar al procedimiento almacenado para obtener los préstamos con adeudo pendiente
+        String procedimiento = "CALL PrestamosConAdeudoPendiente()";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(procedimiento);  ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            // Agregar cada fila de resultado al modelo de la tabla
+            while (resultSet.next()) {
+                int idPrestamo = resultSet.getInt("idPrestamo");
+                String usuario = resultSet.getString("Usuario");
+                double adeudo = resultSet.getDouble("adeudo");
+                modeloTabla.addRow(new Object[]{idPrestamo, usuario, adeudo});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
+    public static JTable mostrarHistorial(JTable tabla, int idUser) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID Prestamo");
+        modeloTabla.addColumn("Usuario");
+        modeloTabla.addColumn("Fecha Prestamo");
+        modeloTabla.addColumn("Fecha Devolución");
+        modeloTabla.addColumn("Adeudo");
+
+        // Llamar al procedimiento almacenado para obtener el historial de préstamos del usuario
+        String procedimiento = "CALL HistorialPrestamosPorUsuario(?)";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(procedimiento)) {
+
+            // Establecer el parámetro del procedimiento (id del usuario)
+            preparedStatement.setInt(1, idUser);
+
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                // Agregar cada fila de resultado al modelo de la tabla
+                while (resultSet.next()) {
+                    int idPrestamo = resultSet.getInt("idPrestamo");
+                    String usuario = resultSet.getString("Usuario");
+                    String fechaPrestamo = resultSet.getString("fechaPrestamo");
+                    String fechaDev = resultSet.getString("fechaDev");
+                    double adeudo = resultSet.getDouble("adeudo");
+                    modeloTabla.addRow(new Object[]{idPrestamo, usuario, fechaPrestamo, fechaDev, adeudo});
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

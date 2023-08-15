@@ -951,6 +951,7 @@ public class Controlador implements ActionListener, KeyListener {
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Usuario o contraseñaincorrectos.");
+                        logIn.txt_pass.setText("");
                     }
                 }
                 else{
@@ -964,6 +965,7 @@ public class Controlador implements ActionListener, KeyListener {
         if(adminVista.btn_adeudoPendiente == evento.getSource()){
             try{
                 //Llamar al metodo con el procedimiento almacenado que muestre los adeudos pendientes
+                Modelo.mostrarAdeudosPendientes(adminVista.tbl_busqueda);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -995,6 +997,7 @@ public class Controlador implements ActionListener, KeyListener {
         else if(adminVista.btn_historial == evento.getSource()){
             try{
                 //Llamar al metodo ára mostrar todos lo prestamos de un usuario
+                Modelo.mostrarHistorial(adminVista.tbl_busqueda, Integer.parseInt(adminVista.txt_idUsuario.getText()));
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1430,6 +1433,10 @@ public class Controlador implements ActionListener, KeyListener {
         prestamoNuevoDatos.txt_Id.setText("");
         prestamoNuevoDatos.txt_Nom.setText("");
         prestamoNuevoDatos.txt_idUser.setText("");
+        
+        //Apartado de Login
+        logIn.txt_user.setText("");
+        logIn.txt_pass.setText("");
         //Limpiar la tabla
         DefaultTableModel modeloTabla = (DefaultTableModel) prestamoNuevoDatos.tbl_Prestamo_Nuevo_Datos.getModel();
         modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
