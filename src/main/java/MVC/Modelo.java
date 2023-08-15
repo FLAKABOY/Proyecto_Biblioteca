@@ -1879,13 +1879,15 @@ public class Modelo {
         }
     }
 
-    // Método para validar usuario y contraseña para ingresar
-    public static boolean logIn(String usuario, char[] pass) {
-        // Encripta la contraseña ingresada usando el método hashPassword
-        String hashedPass = hashPassword(pass);
+    public static boolean logIn(String usuario, String pass) {
+        // Convertir la contraseña ingresada a un arreglo de caracteres
+        char[] passChars = pass.toCharArray();
+
+        // Encripta la contraseña ingresada utilizando hashPassword
+        String hashedPass = hashPassword(passChars);
 
         // Consulta SQL para verificar la existencia del usuario y contraseña en la tabla admins
-        String query = "SELECT COUNT(*) AS count FROM admins WHERE usuario = ? AND contra = ?";
+        String query = "SELECT COUNT(*) AS count FROM admins WHERE usuario = ? AND contra = SHA2(?, 256)";
 
         try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -2146,56 +2148,72 @@ public class Modelo {
         return tabla;
     }
 
-   public static JTable mostrarPrestamosPorFecha(JTable tabla, String fechaIni, String fechaFin) {
-    DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+    public static JTable mostrarPrestamosPorFecha(JTable tabla, String fechaIni, String fechaFin) {
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
 
-    // Limpiar las filas actuales de la tabla
-    modelo.setRowCount(0);
+        // Limpiar las filas actuales de la tabla
+        modelo.setRowCount(0);
 
-    String query = "CALL buscarPrestamosPorFecha(?, ?)";
+        String query = "CALL buscarPrestamosPorFecha(?, ?)";
 
-    try (Connection connection = conectar();
-         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try ( Connection connection = conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-        preparedStatement.setString(1, fechaIni);
-        preparedStatement.setString(2, fechaFin);
+            preparedStatement.setString(1, fechaIni);
+            preparedStatement.setString(2, fechaFin);
 
-        try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            // Obtener metadatos de la consulta
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnas = metaData.getColumnCount();
-            String[] nombresColumnas = new String[columnas];
-            for (int i = 0; i < columnas; i++) {
-                nombresColumnas[i] = metaData.getColumnName(i + 1);
-            }
-
-            // Establecer nombres de columnas al modelo de la tabla
-            modelo.setColumnIdentifiers(nombresColumnas);
-
-            // Llenar la tabla con los resultados
-            while (resultSet.next()) {
-                Object[] fila = new Object[columnas];
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+                // Obtener metadatos de la consulta
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                int columnas = metaData.getColumnCount();
+                String[] nombresColumnas = new String[columnas];
                 for (int i = 0; i < columnas; i++) {
-                    if (nombresColumnas[i].equalsIgnoreCase("estado")) {
-                        boolean estado = resultSet.getBoolean(i + 1);
-                        fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
-                    } else {
-                        fila[i] = resultSet.getObject(i + 1);
-                    }
+                    nombresColumnas[i] = metaData.getColumnName(i + 1);
                 }
-                modelo.addRow(fila);
+
+                // Establecer nombres de columnas al modelo de la tabla
+                modelo.setColumnIdentifiers(nombresColumnas);
+
+                // Llenar la tabla con los resultados
+                while (resultSet.next()) {
+                    Object[] fila = new Object[columnas];
+                    for (int i = 0; i < columnas; i++) {
+                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                            boolean estado = resultSet.getBoolean(i + 1);
+                            fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
+                        } else {
+                            fila[i] = resultSet.getObject(i + 1);
+                        }
+                    }
+                    modelo.addRow(fila);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+
+        return tabla;
     }
 
-    return tabla;
-}
+    public static void insertAdmin(String usuario, String contra) {
+        // Encripta la contraseña ingresada
+        String hashedPass = hashPassword(contra.toCharArray());
 
+        String query = "INSERT INTO admins (usuario, contra) VALUES (?, SHA2(?, 256))";
 
+        try ( Connection connection = conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
+            preparedStatement.setString(1, usuario);
+            preparedStatement.setString(2, hashedPass);
 
+            preparedStatement.executeUpdate();
+            System.out.println("Administrador insertado exitosamente.");
+            JOptionPane.showMessageDialog(null, "Administrador añadido con exito.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+    }
 
     //Subclase para los usuarios
     public static class Usuario {

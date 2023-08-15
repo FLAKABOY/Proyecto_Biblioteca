@@ -209,6 +209,10 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarPanel.btn_Editorial.addActionListener(this);
         this.agregarPanel.btn_Genero.addActionListener(this);
         this.agregarPanel.btn_Regresar.addActionListener(this);
+        
+        //Botones de agregar administrador
+        this.agregarAdmin.btn_agregar.addActionListener(this);
+        this.agregarAdmin.btn_Regresar.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -946,7 +950,7 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que los campos no esten vacios
                 if(!logIn.txt_user.getText().isEmpty() && !logIn.txt_pass.getText().isEmpty()){
                     //Mandar a llamar el metodo de login
-                    if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getPassword())){
+                    if(Modelo.logIn(logIn.txt_user.getText(), logIn.txt_pass.getText())){
                         //Mostrar el apartado funcional de reportes
                         vista.content = vista(adminVista);
                     }
@@ -1073,7 +1077,21 @@ public class Controlador implements ActionListener, KeyListener {
         //Apartado para el panel de Agregar un nuevo administrador
         if(agregarAdmin.btn_agregar == evento.getSource()){
             try{
-                //Llamar al metodo para insertar un administrador en la tabla
+                //Validar que los campos no esten vacios
+                if(!agregarAdmin.txt_User.getText().isEmpty() && !agregarAdmin.txt_pass.getText().isEmpty() && !agregarAdmin.txt_Confirm.getText().isEmpty()){
+                    //Validar que las contraseñas coincidan
+                    if(agregarAdmin.txt_pass.getText().equals(agregarAdmin.txt_Confirm.getText())){
+                        //Llamar al metodo para insertar un administrador en la tabla
+                        Modelo.insertAdmin(agregarAdmin.txt_User.getText(), agregarAdmin.txt_pass.getText());
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
+                    }
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
+                } 
+                
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }

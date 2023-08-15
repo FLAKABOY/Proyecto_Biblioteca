@@ -22,7 +22,7 @@ public class Agregar_Admin extends javax.swing.JPanel {
         //
         TextPrompt txtU = new TextPrompt("Ingrese el nombre de usuario", txt_User);
         TextPrompt txtPass = new TextPrompt("Ingrese la contraseña", txt_pass);
-        TextPrompt txtPass2 = new TextPrompt("Ingrese la contraseña", txt_Confirm);
+        TextPrompt txtPass2 = new TextPrompt("Confirmar contraseña", txt_Confirm);
         
     }
     
@@ -106,14 +106,13 @@ public class Agregar_Admin extends javax.swing.JPanel {
                 .addGap(28, 28, 28)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bgLayout.createSequentialGroup()
-                        .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txt_User)
-                                .addComponent(txt_pass)
-                                .addComponent(txt_Confirm))
+                        .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(jLabel4)
+                            .addComponent(txt_User, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                            .addComponent(txt_Confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_pass))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(87, 87, 87))
