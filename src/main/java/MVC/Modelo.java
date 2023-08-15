@@ -497,57 +497,50 @@ public class Modelo {
         return tabla;
     }
 
-    public static JTable buscarPrestamo(JTable tabla, String nombreUsuario) {
-        // Definir la consulta SQL para buscar préstamos por el nombre del usuario
-        String consulta = "SELECT p.idPrestamo, p.idUsuario, p.fechaPrestamo, p.fechaDev, p.cantLib, p.adeudo, "
-                + "p.estado "
-                + "FROM prestamos AS p "
-                + "INNER JOIN usuarios AS u ON p.idUsuario = u.idUsuario "
-                + "WHERE u.nombre LIKE ?";
+   public static JTable buscarPrestamo(JTable tabla, String nombreUsuario) {
+    String consulta = "SELECT p.idPrestamo, p.idUsuario, p.fechaPrestamo, p.fechaDev, p.cantLib, p.adeudo, p.estado "
+                    + "FROM prestamos AS p "
+                    + "INNER JOIN usuarios AS u ON p.idUsuario = u.idUsuario "
+                    + "WHERE u.nombre LIKE ?";
 
-        // Obtener el modelo de la tabla
-        DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-        modeloTabla.setRowCount(0); // Limpiar la tabla antes de llenarla con nuevos datos
+    DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+    modeloTabla.setRowCount(0);
 
-        try ( Connection conexion = Modelo.conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
+    try (Connection conexion = Modelo.conectar();
+         PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
 
-            // Establecer el parámetro (nombre de usuario) en la consulta
-            preparedStatement.setString(1, "%" + nombreUsuario + "%");
+        preparedStatement.setString(1, "%" + nombreUsuario + "%");
 
-            try ( ResultSet resultado = preparedStatement.executeQuery()) {
-                // Obtener metadatos de la consulta
-                ResultSetMetaData metaData = resultado.getMetaData();
-                int columnas = metaData.getColumnCount();
-                String[] nombresColumnas = new String[columnas];
-                for (int i = 0; i < columnas; i++) {
-                    nombresColumnas[i] = metaData.getColumnName(i + 1);
-                }
-
-                // Establecer nombres de columnas al modelo
-                modeloTabla.setColumnIdentifiers(nombresColumnas);
-
-                // Llenar la tabla con los resultados de la búsqueda
-                while (resultado.next()) {
-                    Object[] fila = new Object[columnas];
-                    for (int i = 0; i < columnas; i++) {
-                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
-                            boolean estado = resultado.getBoolean(i + 1);
-                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
-                        } else {
-                            fila[i] = resultado.getObject(i + 1);
-                        }
-                    }
-                    modeloTabla.addRow(fila);
-                }
+        try (ResultSet resultado = preparedStatement.executeQuery()) {
+            ResultSetMetaData metaData = resultado.getMetaData();
+            int columnas = metaData.getColumnCount();
+            String[] nombresColumnas = new String[columnas];
+            for (int i = 0; i < columnas; i++) {
+                nombresColumnas[i] = metaData.getColumnName(i + 1);
             }
+            modeloTabla.setColumnIdentifiers(nombresColumnas);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            while (resultado.next()) {
+                Object[] fila = new Object[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    if ("estado".equalsIgnoreCase(nombresColumnas[i])) {
+                        boolean estado = resultado.getBoolean(i + 1);
+                        fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                    } else {
+                        fila[i] = resultado.getObject(i + 1);
+                    }
+                }
+                modeloTabla.addRow(fila);
+            }
         }
 
-        // Retornar la tabla con los resultados
-        return tabla;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+
+    return tabla;
+}
+
 
     public static JTable buscarPrestamoIdUsuario(JTable tabla, int idUsuario) {
         // Definir la consulta SQL para buscar los préstamos asociados al ID de usuario

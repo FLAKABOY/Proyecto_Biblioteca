@@ -36,6 +36,13 @@ public class Dashjboard extends javax.swing.JFrame {
 
         //Metodo para poner el jpanel correspondiente.
         InitContent();
+         Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(Color.blue);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(miColor);
     }
 
     //Metodos del objeto
@@ -131,6 +138,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_home.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_home.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_home.setIconTextGap(12);
+        btn_home.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_homeActionPerformed(evt);
+            }
+        });
 
         btn_users.setBackground(new java.awt.Color(0, 74, 143));
         btn_users.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -142,6 +154,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_users.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_users.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_users.setIconTextGap(12);
+        btn_users.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_usersActionPerformed(evt);
+            }
+        });
 
         btn_prestamos.setBackground(new java.awt.Color(0, 74, 143));
         btn_prestamos.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -153,6 +170,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_prestamos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_prestamos.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_prestamos.setIconTextGap(12);
+        btn_prestamos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_prestamosActionPerformed(evt);
+            }
+        });
 
         btn_reportes.setBackground(new java.awt.Color(0, 74, 143));
         btn_reportes.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -164,6 +186,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_reportes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_reportes.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_reportes.setIconTextGap(12);
+        btn_reportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_reportesActionPerformed(evt);
+            }
+        });
 
         btn_devoluciones.setBackground(new java.awt.Color(0, 74, 143));
         btn_devoluciones.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -175,6 +202,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_devoluciones.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_devoluciones.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_devoluciones.setIconTextGap(12);
+        btn_devoluciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_devolucionesActionPerformed(evt);
+            }
+        });
 
         btn_libros.setBackground(new java.awt.Color(0, 74, 143));
         btn_libros.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
@@ -186,6 +218,11 @@ public class Dashjboard extends javax.swing.JFrame {
         btn_libros.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btn_libros.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         btn_libros.setIconTextGap(12);
+        btn_libros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_librosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout menusBtnLayout = new javax.swing.GroupLayout(menusBtn);
         menusBtn.setLayout(menusBtnLayout);
@@ -243,7 +280,7 @@ public class Dashjboard extends javax.swing.JFrame {
                 .addGroup(headerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(headerLayout.createSequentialGroup()
                         .addGap(184, 184, 184)
-                        .addComponent(MensajeBiblio, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
+                        .addComponent(MensajeBiblio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(headerLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(fecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -255,7 +292,7 @@ public class Dashjboard extends javax.swing.JFrame {
             .addGroup(headerLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(MensajeBiblio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(fecha)
                 .addGap(33, 33, 33))
         );
@@ -315,6 +352,69 @@ public class Dashjboard extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
+        // TODO add your handling code here:
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(Color.blue);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(miColor);
+    }//GEN-LAST:event_btn_homeActionPerformed
+
+    private void btn_devolucionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_devolucionesActionPerformed
+        // TODO add your handling code here:
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(miColor);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(Color.BLUE);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(miColor);
+    }//GEN-LAST:event_btn_devolucionesActionPerformed
+
+    private void btn_librosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_librosActionPerformed
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(miColor);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(Color.blue);
+        btn_reportes.setBackground(miColor);
+    }//GEN-LAST:event_btn_librosActionPerformed
+
+    private void btn_usersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_usersActionPerformed
+        // TODO add your handling code here:
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(miColor);
+        btn_users.setBackground(Color.blue);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(miColor);
+    }//GEN-LAST:event_btn_usersActionPerformed
+
+    private void btn_prestamosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_prestamosActionPerformed
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(miColor);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(Color.blue);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(miColor);
+    }//GEN-LAST:event_btn_prestamosActionPerformed
+
+    private void btn_reportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_reportesActionPerformed
+        Color miColor = new Color(0, 74, 143);
+        btn_home.setBackground(miColor);
+        btn_users.setBackground(miColor);
+        btn_prestamos.setBackground(miColor);
+        btn_devoluciones.setBackground(miColor);
+        btn_libros.setBackground(miColor);
+        btn_reportes.setBackground(Color.blue);
+    }//GEN-LAST:event_btn_reportesActionPerformed
 
     /**
      * @param args the command line arguments

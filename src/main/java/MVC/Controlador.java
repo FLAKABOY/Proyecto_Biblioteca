@@ -170,6 +170,11 @@ public class Controlador implements ActionListener, KeyListener {
         this.prestamoNuevoGenerar.btn_BuscarId.addActionListener(this);
         this.prestamoNuevoGenerar.btn_Nom.addActionListener(this);
         this.prestamoNuevoGenerar.btn_regresar.addActionListener(this);
+        
+        //Panel eliminar prestamo
+        this.prestamoEliminar.btn_BuscarId.addActionListener(this);
+        this.prestamoEliminar.btn_Eliminar.addActionListener(this);
+        this.prestamoEliminar.btn_Id2.addActionListener(this);
 
         /*Botones del panel para vincular con folio en caso de no completarlo
         en el proceso normal*/
@@ -739,7 +744,7 @@ public class Controlador implements ActionListener, KeyListener {
                 //Validar que el campo no este vacio
                 if (!prestamoEliminar.txt_Id_Prestamo.getText().isEmpty()) {
                     //Llamada a Modelo con el metodo de eliminacion logica
-
+                    Modelo.borrarPrestamoLogic(Integer.parseInt(prestamoEliminar.txt_Id_Prestamo.getText()));
                 }
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
@@ -748,7 +753,7 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (prestamoEliminar.btn_BuscarId == evento.getSource()) {
             try {
                 //Llamada a Modelo con el metodo de buscar prestamo por ID del usuario
-                prestamoEliminar.tbl_Prestamos_Eliminar = Modelo.buscarPrestamoIdUsuario(prestamoEliminar.tbl_Prestamos_Eliminar,
+                Modelo.buscarPrestamoIdUsuario(prestamoEliminar.tbl_Prestamos_Eliminar,
                         Integer.parseInt(prestamoEliminar.txt_Id.getText()));
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
