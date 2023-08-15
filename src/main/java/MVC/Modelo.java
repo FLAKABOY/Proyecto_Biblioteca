@@ -2261,6 +2261,27 @@ public class Modelo {
         }
     }
 
+    public static void insertGenero(String genero) {
+        String query = "INSERT INTO genero (genero) VALUES (?)";
+
+        try ( Connection connection = conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, genero);
+
+            int filasInsertadas = preparedStatement.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Género insertado exitosamente.");
+                JOptionPane.showMessageDialog(null, "Género insertado exitosamente.");
+            } else {
+                System.out.println("No se pudo insertar el género.");
+                JOptionPane.showMessageDialog(null, "Error al insertar el género.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     //Subclase para los usuarios
     public static class Usuario {
 

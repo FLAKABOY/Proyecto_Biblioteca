@@ -69,6 +69,7 @@ public class Controlador implements ActionListener, KeyListener {
     private Agregar_Admin agregarAdmin;
     private Agregar_Autor agregarAutor;
     private Agregar_Editorial agregarEditorial;
+    private Agregar_Genero agregarGenero;
     
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -111,6 +112,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarAdmin = new Agregar_Admin();
         this.agregarAutor = new Agregar_Autor();
         this.agregarEditorial = new Agregar_Editorial();
+        this.agregarGenero = new Agregar_Genero();
         
 
         //Botones del Dashjboard
@@ -225,6 +227,10 @@ public class Controlador implements ActionListener, KeyListener {
         //Botones para Editorial
         this.agregarEditorial.btn_agregar.addActionListener(this);
         this.agregarEditorial.btn_Regresar.addActionListener(this);
+        
+        //Botones de Genero
+        this.agregarGenero.btn_agregar.addActionListener(this);
+        this.agregarGenero.btn_Regresar.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -1143,6 +1149,9 @@ public class Controlador implements ActionListener, KeyListener {
                     agregarAutor.jdc_fechaNacimiento.setDateFormatString("");
                     vista.content = vista(agregarPanel);
                 }
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
+                }
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1161,16 +1170,46 @@ public class Controlador implements ActionListener, KeyListener {
             try{
                 //Validar que los campos no esten vacios
                 if(!agregarEditorial.txt_Editorial.getText().isEmpty()){
-                    //Mandar a llamar el metodo paar agregar editorial
+                    //Mandar a llamar el metodo paar agregar Editorial
                     Modelo.insertEditorial(agregarEditorial.txt_Editorial.getText());
                     agregarEditorial.txt_Editorial.setText("");
                     vista.content = vista(agregarPanel);
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
                 }
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
         else if( agregarEditorial.btn_Regresar == evento.getSource()){
+            try{
+                //Regresar al panel de añadir
+                vista.content = vista(agregarPanel);
+                agregarEditorial.txt_Editorial.setText("");
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado de agregar Genero
+        if(agregarGenero.btn_agregar == evento.getSource()){
+            try{
+                //Validar que los campos esten vacios
+                if(!agregarGenero.txt_Genero.getText().isEmpty()){
+                    //Mandar a llamr el metodo de agregar Genero
+                    Modelo.insertGenero(agregarGenero.txt_Genero.getText());
+                    agregarGenero.txt_Genero.setText("");
+                    vista.content = vista(agregarPanel);
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Favor de llenar los campos correspondientes.");
+                }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarGenero.btn_Regresar == evento.getSource()){
             try{
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
@@ -1511,7 +1550,16 @@ public class Controlador implements ActionListener, KeyListener {
         
         //Caja de texto agregar Editorial
         if(agregarEditorial.txt_Editorial == evento.getSource()){
-            if (agregarAutor.txt_nacionalidad.getText().length() >= 50) {
+            if (agregarEditorial.txt_Editorial.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+        
+        //Caja de texto genero
+        if(agregarGenero.txt_Genero == evento.getSource()){
+            if (agregarGenero.txt_Genero.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
                 evento.consume();
