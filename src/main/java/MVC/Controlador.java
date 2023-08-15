@@ -1119,6 +1119,7 @@ public class Controlador implements ActionListener, KeyListener {
         } else if (agregarPanel.btn_Genero == evento.getSource()) {
             try {
                 //Llamar al metodo para mostrar el panel de agregar Genero
+                vista.content = vista(agregarGenero);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
