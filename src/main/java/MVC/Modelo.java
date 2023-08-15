@@ -2282,6 +2282,84 @@ public class Modelo {
         }
     }
 
+    public static Autor datosAutorPorId(int idAutor) {
+        String consulta = "SELECT nombre, nacionalidad, fechaNacimiento, estado FROM autor WHERE idAutor = ?";
+
+        try ( Connection conexion = conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
+
+            preparedStatement.setInt(1, idAutor);
+
+            try ( ResultSet resultado = preparedStatement.executeQuery()) {
+                if (resultado.next()) {
+                    String nombre = resultado.getString("nombre");
+                    String nacionalidad = resultado.getString("nacionalidad");
+                    Date fechaNacimiento = resultado.getDate("fechaNacimiento");
+                    boolean estado = resultado.getBoolean("estado");
+
+                    return new Autor(idAutor, nombre, nacionalidad, fechaNacimiento, estado);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        }
+
+        return null;
+    }
+
+    public static Autor datosAutorPorNombre(String nombre) {
+        String consulta = "SELECT idAutor, nacionalidad, fechaNacimiento, estado FROM autores WHERE nombre LIKE ?";
+
+        try ( Connection conexion = conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
+
+            preparedStatement.setString(1, "%" + nombre + "%");
+
+            try ( ResultSet resultado = preparedStatement.executeQuery()) {
+                if (resultado.next()) {
+                    int idAutor = resultado.getInt("idAutor");
+                    String nacionalidad = resultado.getString("nacionalidad");
+                    Date fechaNacimiento = resultado.getDate("fechaNacimiento");
+                    boolean estado = resultado.getBoolean("estado");
+
+                    return new Autor(idAutor, nombre, nacionalidad, fechaNacimiento, estado);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        }
+
+        return null;
+    }
+
+    public static void updateAutor(int idAutor, String nombre, String nacionalidad, String fechaNaci, String estado) {
+        String consulta = "UPDATE autor SET nombre = ?, nacionalidad = ?, fechaNacimiento = ?, estado = ? WHERE idAutor = ?";
+
+        try ( Connection conexion = conectar();  PreparedStatement preparedStatement = conexion.prepareStatement(consulta)) {
+
+            boolean estadoBool = estado.equalsIgnoreCase("Activo");
+
+            preparedStatement.setString(1, nombre);
+            preparedStatement.setString(2, nacionalidad);
+            preparedStatement.setString(3, fechaNaci);
+            preparedStatement.setBoolean(4, estadoBool);
+            preparedStatement.setInt(5, idAutor);
+
+            int filasActualizadas = preparedStatement.executeUpdate();
+            if (filasActualizadas > 0) {
+                JOptionPane.showMessageDialog(null, "Datos actualizados con éxito");
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró el autor con el ID proporcionado");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error: " + e);
+        }
+    }
+
     //Subclase para los usuarios
     public static class Usuario {
 
@@ -2432,4 +2510,70 @@ public class Modelo {
 
     }
 
+    public static class Autor {
+
+        private int idAutor;
+        private String nombre;
+        private String nacionalidad;
+        private Date fechaNacimiento;
+        private boolean estado;
+
+        public Autor() {
+
+        }
+
+        public Autor(int idAutor, String nombre, String nacionalidad, Date fechaNacimiento, boolean estado) {
+            this.idAutor = idAutor;
+            this.nombre = nombre;
+            this.nacionalidad = nacionalidad;
+            this.fechaNacimiento = fechaNacimiento;
+            this.estado = estado;
+        }
+
+        // Getters y setters para los atributos de Autor
+        public int getIdAutor() {
+            return idAutor;
+        }
+
+        public void setIdAutor(int idAutor) {
+            this.idAutor = idAutor;
+        }
+
+        public String getNombre() {
+            return nombre;
+        }
+
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+
+        public String getNacionalidad() {
+            return nacionalidad;
+        }
+
+        public void setNacionalidad(String nacionalidad) {
+            this.nacionalidad = nacionalidad;
+        }
+
+        public Date getFechaNacimiento() {
+            return fechaNacimiento;
+        }
+
+        public void setFechaNacimiento(Date fechaNacimiento) {
+            this.fechaNacimiento = fechaNacimiento;
+        }
+
+        public boolean getEstado() {
+            return estado;
+        }
+
+        public void setEstado(boolean estado) {
+            this.estado = estado;
+        }
+
+    }
+
+    
+    
+    //FINALIZACION DEL PROYECTO
 }

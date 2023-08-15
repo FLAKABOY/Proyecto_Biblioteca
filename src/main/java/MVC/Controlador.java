@@ -10,6 +10,7 @@
  */
 package MVC;
 
+import MVC.Modelo.Autor;
 import MVC.Modelo.Libro;
 import MVC.Modelo.Usuario;
 import java.awt.BorderLayout;
@@ -18,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -75,6 +77,7 @@ public class Controlador implements ActionListener, KeyListener {
     private Agregar_Autor agregarAutor;
     private Agregar_Editorial agregarEditorial;
     private Agregar_Genero agregarGenero;
+    private Editar_Autor editarAutor;
 
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -118,6 +121,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarAutor = new Agregar_Autor();
         this.agregarEditorial = new Agregar_Editorial();
         this.agregarGenero = new Agregar_Genero();
+        this.editarAutor = new Editar_Autor();
 
         //Botones del Dashjboard
         this.vista.btn_home.addActionListener(this);
@@ -220,6 +224,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarPanel.btn_Editorial.addActionListener(this);
         this.agregarPanel.btn_Genero.addActionListener(this);
         this.agregarPanel.btn_Regresar.addActionListener(this);
+        this.agregarPanel.btn_Edit.addActionListener(this);
 
         //Botones de agregar administrador
         this.agregarAdmin.btn_agregar.addActionListener(this);
@@ -237,6 +242,11 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarGenero.btn_agregar.addActionListener(this);
         this.agregarGenero.btn_Regresar.addActionListener(this);
 
+        //Botones Esitar Autor
+        this.editarAutor.btn_BusId.addActionListener(this);
+        this.editarAutor.btn_BusNom.addActionListener(this);
+        this.editarAutor.btn_Regresar.addActionListener(this);
+        this.editarAutor.btn_Guardar.addActionListener(this);
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
         caracteres que se ingresaran en los mismos(Numericos o Letras)*/
@@ -317,6 +327,12 @@ public class Controlador implements ActionListener, KeyListener {
 
         //KeyListener para los TextField de el panel de Agregar Editorial
         this.agregarEditorial.txt_Editorial.addKeyListener(this);
+
+        //Editar autor
+        this.editarAutor.txt_Autor.addKeyListener(this);
+        this.editarAutor.txt_idBus.addKeyListener(this);
+        this.editarAutor.txt_nacionalidad.addKeyListener(this);
+        this.editarAutor.txt_nombreBus.addKeyListener(this);
 
     }
 
@@ -1073,7 +1089,7 @@ public class Controlador implements ActionListener, KeyListener {
                 } else {
                     JOptionPane.showMessageDialog(null, "No hay datos para exportar", "Mensaje de error", JOptionPane.ERROR_MESSAGE);
                 }
-            }catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
@@ -1110,6 +1126,12 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 //Regresar al panel principal de admin
                 vista.content = vista(adminVista);
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        } else if (agregarPanel.btn_Edit == evento.getSource()) {
+            try {
+                vista.content = vista(editarAutor);
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1175,6 +1197,48 @@ public class Controlador implements ActionListener, KeyListener {
             }
         }
 
+        //Apartado editar autor
+        if (editarAutor.btn_BusId == evento.getSource()) {
+            try {
+                colocarAutorId(new Autor());
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        } else if (editarAutor.btn_BusNom == evento.getSource()) {
+            try {
+                colocarAutorName(new Autor());
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+
+        } else if (editarAutor.btn_Guardar == evento.getSource()) {
+            try {
+                //Validar que los campos no esten vacios
+                if(!editarAutor.txt_Autor.getText().isEmpty() && !editarAutor.txt_nacionalidad.getText().isEmpty() && (editarAutor.jdc_fechaNacimiento.getDate() != null)){
+                    //Validar que este un id ingresado
+                    if(!editarAutor.txt_idBus.getText().isEmpty()){
+                        //Mandar a llamar el metodo de actualizar Autor
+                        Modelo.updateAutor(Integer.parseInt(editarAutor.txt_idBus.getText()),
+                                editarAutor.txt_Autor.getText(),
+                                editarAutor.txt_nacionalidad.getText(),
+                                ((JTextField) editarAutor.jdc_fechaNacimiento.getDateEditor().getUiComponent()).getText(),
+                                editarAutor.cb_Estado.getSelectedItem().toString());
+                    }
+                }
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+
+        } else if (editarAutor.btn_Regresar == evento.getSource()) {
+            try {
+                //Regresar al panel de añadir
+                vista.content = vista(agregarPanel);
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+
+        }
+
         //Apartado para agregar Editorial
         if (agregarEditorial.btn_agregar == evento.getSource()) {
             try {
@@ -1224,6 +1288,7 @@ public class Controlador implements ActionListener, KeyListener {
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
         }
+
     }//Llave del metodo actionPerformed
 
     /*Sobreescribir todos los metodos los metodos abtractosos de la interface
@@ -1571,6 +1636,37 @@ public class Controlador implements ActionListener, KeyListener {
             }
         }
 
+        //Cajas de texto editar autor
+        if (editarAutor.txt_Autor == evento.getSource()) {
+            if (editarAutor.txt_Autor.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+
+        if (editarAutor.txt_idBus == evento.getSource()) {
+            if (c < '0' || c > '9') {
+                evento.consume();
+            }
+        }
+
+        if (editarAutor.txt_nacionalidad == evento.getSource()) {
+            if (editarAutor.txt_nacionalidad.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+
+        if (editarAutor.txt_nombreBus == evento.getSource()) {
+            if (editarAutor.txt_nombreBus.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+
     }//Llave del metodo keyTyped
 
     @Override
@@ -1824,6 +1920,77 @@ public class Controlador implements ActionListener, KeyListener {
         Modelo.llenarComboBoxAutores(librosEditar.cb_autor);
         Modelo.llenarComboBoxEditoriales(librosEditar.cb_editorial);
         Modelo.llenarComboBoxGeneros(librosEditar.cb_genero);
+    }
+
+    public void colocarAutorId(Autor autor) {
+        try {
+            // Vaciar el combo box
+            editarAutor.cb_Estado.removeAllItems();
+
+            // Obtenemos los datos
+            int idBus = Integer.parseInt(editarAutor.txt_idBus.getText());
+            System.out.println(idBus);
+            autor = Modelo.datosAutorPorId(idBus);
+
+            if (autor != null) {
+                // COLOCAR DATOS DEL AUTOR
+                editarAutor.txt_Autor.setText(autor.getNombre());
+                editarAutor.txt_nacionalidad.setText(autor.getNacionalidad());
+                editarAutor.jdc_fechaNacimiento.setDate(autor.getFechaNacimiento());
+
+                // En caso de que se cumpla una condición, se llenará el comboBox
+                if (autor.getEstado()) {
+                    editarAutor.cb_Estado.insertItemAt("ACTIVO", 0);
+                    editarAutor.cb_Estado.insertItemAt("INACTIVO", 1);
+                    editarAutor.cb_Estado.setSelectedItem("ACTIVO");
+                } else {
+                    editarAutor.cb_Estado.insertItemAt("INACTIVO", 0);
+                    editarAutor.cb_Estado.insertItemAt("ACTIVO", 1);
+                    editarAutor.cb_Estado.setSelectedItem("INACTIVO");
+                }
+            } else {
+                // Manejar el caso cuando no se encuentre un autor con el ID proporcionado
+                JOptionPane.showMessageDialog(null, "Autor no encontrado con el ID proporcionado");
+            }
+        } catch (NumberFormatException e) {
+            // Manejar el caso cuando el ID proporcionado no sea un número válido
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese un ID válido");
+        }
+    }
+
+    public void colocarAutorName(Autor autor) {
+        try {
+            // Vaciar el combo box
+            editarAutor.cb_Estado.removeAllItems();
+            // Obtenemos los datos
+            String nombre = editarAutor.txt_nombreBus.getText();
+            autor = Modelo.datosAutorPorNombre(nombre);
+            if (autor != null) {
+                // COLOCAR DATOS DEL AUTOR
+                editarAutor.txt_Autor.setText(autor.getNombre());
+                editarAutor.txt_idBus.setText(Integer.toString(autor.getIdAutor()));
+                editarAutor.txt_nacionalidad.setText(autor.getNacionalidad());
+                editarAutor.jdc_fechaNacimiento.setDate(autor.getFechaNacimiento());
+
+                // En caso de que se cumpla una condición, se llenará el comboBox
+                if (autor.getEstado()) {
+                    editarAutor.cb_Estado.insertItemAt("ACTIVO", 0);
+                    editarAutor.cb_Estado.insertItemAt("INACTIVO", 1);
+                    editarAutor.cb_Estado.setSelectedItem("ACTIVO");
+                } else {
+                    editarAutor.cb_Estado.insertItemAt("INACTIVO", 0);
+                    editarAutor.cb_Estado.insertItemAt("ACTIVO", 1);
+                    editarAutor.cb_Estado.setSelectedItem("INACTIVO");
+                }
+            } else {
+                // Manejar el caso cuando no se encuentre un autor con el ID proporcionado
+                JOptionPane.showMessageDialog(null, "Autor no encontrado con el ID proporcionado");
+            }
+        }catch (NumberFormatException e) {
+            // Manejar el caso cuando el ID proporcionado no sea un número válido
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese un ID válido");
+        }
+
     }
 
 }//Llave de la clase Controlador

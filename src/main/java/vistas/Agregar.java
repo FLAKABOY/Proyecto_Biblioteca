@@ -31,6 +31,7 @@ public class Agregar extends javax.swing.JPanel {
          btn_Editorial.putClientProperty( "JButton.buttonType", "roundRect" );
          btn_Genero.putClientProperty( "JButton.buttonType", "roundRect" );
          btn_Regresar.putClientProperty( "JButton.buttonType", "roundRect" );
+         btn_Edit.putClientProperty( "JButton.buttonType", "roundRect" );
      }
      
     /** This method is called from within the constructor to
@@ -49,6 +50,7 @@ public class Agregar extends javax.swing.JPanel {
         btn_Editorial = new javax.swing.JButton();
         btn_Genero = new javax.swing.JButton();
         btn_Regresar = new javax.swing.JButton();
+        btn_Edit = new javax.swing.JButton();
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
         bg.setForeground(new java.awt.Color(0, 0, 0));
@@ -91,37 +93,47 @@ public class Agregar extends javax.swing.JPanel {
         btn_Regresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/volver.png"))); // NOI18N
         btn_Regresar.setText("Regresar");
 
+        btn_Edit.setBackground(new java.awt.Color(0, 1, 248));
+        btn_Edit.setForeground(new java.awt.Color(255, 255, 255));
+        btn_Edit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/usuario24px.png"))); // NOI18N
+        btn_Edit.setText("Editar");
+
         javax.swing.GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
         bg.setLayout(bgLayout);
         bgLayout.setHorizontalGroup(
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_Regresar)
+                .addGap(355, 355, 355))
             .addGroup(bgLayout.createSequentialGroup()
                 .addGap(53, 53, 53)
-                .addComponent(btn_Admin)
-                .addGap(29, 29, 29)
-                .addComponent(btn_Autor)
+                .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_Edit)
+                    .addGroup(bgLayout.createSequentialGroup()
+                        .addComponent(btn_Admin)
+                        .addGap(29, 29, 29)
+                        .addComponent(btn_Autor)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addComponent(btn_Editorial)
                 .addGap(88, 88, 88)
                 .addComponent(btn_Genero)
                 .addGap(79, 79, 79))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_Regresar)
-                .addGap(355, 355, 355))
         );
         bgLayout.setVerticalGroup(
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150)
+                .addGap(106, 106, 106)
+                .addComponent(btn_Edit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Admin)
                     .addComponent(btn_Autor)
                     .addComponent(btn_Editorial)
                     .addComponent(btn_Genero))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addComponent(btn_Regresar)
                 .addGap(144, 144, 144))
         );
@@ -143,6 +155,7 @@ public class Agregar extends javax.swing.JPanel {
     private javax.swing.JPanel bg;
     public javax.swing.JButton btn_Admin;
     public javax.swing.JButton btn_Autor;
+    public javax.swing.JButton btn_Edit;
     public javax.swing.JButton btn_Editorial;
     public javax.swing.JButton btn_Genero;
     public javax.swing.JButton btn_Regresar;
