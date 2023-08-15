@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 //Importar el JFrame principal
 import pantallas.Dashjboard;
@@ -981,14 +982,23 @@ public class Controlador implements ActionListener, KeyListener {
         else if(adminVista.btn_buscarPorFecha == evento.getSource()){
             try{
                 //Hacer la busqueda por fecha dependiendo de los datos que ingrese
-                if(!adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString().isEmpty()){
-                    //Hacer la busqueda de fecha inicio en adelante
+                if(adminVista.jdc_fechaInicio.getDate() != null && adminVista.jdc_fechaFin.getDate() != null){
+                    //Buscar dentro del rango de fecha
+                    System.out.println("Rangofecha");
+                   adminVista.tbl_busqueda = Modelo.mostrarPrestamosPorFecha(adminVista.tbl_busqueda, ((JTextField)adminVista.jdc_fechaInicio.getDateEditor().getUiComponent()).getText() , ((JTextField)adminVista.jdc_fechaFin.getDateEditor().getUiComponent()).getText());
+
+
+
                 }
-                else if(!adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString().isEmpty()){
+                else if(adminVista.jdc_fechaFin.getDate() != null){
                     //Buscar prestamos poniendo como limite una fecha
+                    System.out.println("FechaFin");
+                    Modelo.buscarFechaFin(adminVista.tbl_busqueda, adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString());
                 }
-                else if(!adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString().isEmpty() && !adminVista.jdc_fechaFin.getDateEditor().getUiComponent().toString().isEmpty()){
-                    //Hacer busqueda entre ambos rango de fecha
+                else if(adminVista.jdc_fechaInicio.getDate() != null){
+                    //Hacer la busqueda de fecha inicio en adelante
+                    System.out.println("FechaInicio");
+                    Modelo.buscarFechaInicio(adminVista.tbl_busqueda, adminVista.jdc_fechaInicio.getDateEditor().getUiComponent().toString());
                 }
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -2060,6 +2061,141 @@ public class Modelo {
         tabla.setModel(modeloTabla);
         return tabla;
     }
+
+    public static JTable buscarFechaInicio(JTable tabla, String fechaInicio) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID Prestamo");
+        modeloTabla.addColumn("Usuario");
+        modeloTabla.addColumn("Fecha Prestamo");
+        modeloTabla.addColumn("Fecha Devolución");
+        modeloTabla.addColumn("Adeudo");
+
+        // Consulta SQL para buscar los préstamos mayores o iguales a la fecha indicada
+        String consulta = "SELECT p.idPrestamo, u.nombre AS Usuario, p.fechaPrestamo, p.fechaDev, p.adeudo "
+                + "FROM prestamos p "
+                + "JOIN usuarios u ON p.idUsuario = u.idUsuario "
+                + "WHERE p.fechaPrestamo >= ?";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(consulta)) {
+
+            // Establecer el parámetro de la consulta (fecha de inicio)
+            preparedStatement.setString(1, fechaInicio);
+            System.out.println(preparedStatement);
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                // Agregar cada fila de resultado al modelo de la tabla
+                while (resultSet.next()) {
+                    int idPrestamo = resultSet.getInt("idPrestamo");
+                    String usuario = resultSet.getString("Usuario");
+                    String fechaPrestamo = resultSet.getString("fechaPrestamo");
+                    String fechaDev = resultSet.getString("fechaDev");
+                    double adeudo = resultSet.getDouble("adeudo");
+                    modeloTabla.addRow(new Object[]{idPrestamo, usuario, fechaPrestamo, fechaDev, adeudo});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
+    public static JTable buscarFechaFin(JTable tabla, String fechaFin) {
+        // Crear el modelo de la tabla con las columnas necesarias
+        DefaultTableModel modeloTabla = new DefaultTableModel();
+        modeloTabla.addColumn("ID Prestamo");
+        modeloTabla.addColumn("Usuario");
+        modeloTabla.addColumn("Fecha Prestamo");
+        modeloTabla.addColumn("Fecha Devolución");
+        modeloTabla.addColumn("Adeudo");
+
+        // Consulta SQL para buscar los préstamos mayores o iguales a la fecha indicada
+        String consulta = "SELECT p.idPrestamo, u.nombre AS Usuario, p.fechaPrestamo, p.fechaDev, p.adeudo "
+                + "FROM prestamos p "
+                + "JOIN usuarios u ON p.idUsuario = u.idUsuario "
+                + "WHERE p.fechaPrestamo <= ?";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(consulta)) {
+
+            // Establecer el parámetro de la consulta (fecha de inicio)
+            preparedStatement.setString(1, fechaFin);
+            System.out.println(preparedStatement);
+            try ( ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                // Agregar cada fila de resultado al modelo de la tabla
+                while (resultSet.next()) {
+                    int idPrestamo = resultSet.getInt("idPrestamo");
+                    String usuario = resultSet.getString("Usuario");
+                    String fechaPrestamo = resultSet.getString("fechaPrestamo");
+                    String fechaDev = resultSet.getString("fechaDev");
+                    double adeudo = resultSet.getDouble("adeudo");
+                    modeloTabla.addRow(new Object[]{idPrestamo, usuario, fechaPrestamo, fechaDev, adeudo});
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Manejo de excepciones en caso de algún error en la base de datos
+        }
+
+        // Asignar el modelo de la tabla y retornarla
+        tabla.setModel(modeloTabla);
+        return tabla;
+    }
+
+   public static JTable mostrarPrestamosPorFecha(JTable tabla, String fechaIni, String fechaFin) {
+    DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+
+    // Limpiar las filas actuales de la tabla
+    modelo.setRowCount(0);
+
+    String query = "CALL buscarPrestamosPorFecha(?, ?)";
+
+    try (Connection connection = conectar();
+         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+        preparedStatement.setString(1, fechaIni);
+        preparedStatement.setString(2, fechaFin);
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            // Obtener metadatos de la consulta
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnas = metaData.getColumnCount();
+            String[] nombresColumnas = new String[columnas];
+            for (int i = 0; i < columnas; i++) {
+                nombresColumnas[i] = metaData.getColumnName(i + 1);
+            }
+
+            // Establecer nombres de columnas al modelo de la tabla
+            modelo.setColumnIdentifiers(nombresColumnas);
+
+            // Llenar la tabla con los resultados
+            while (resultSet.next()) {
+                Object[] fila = new Object[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                        boolean estado = resultSet.getBoolean(i + 1);
+                        fila[i] = estado ? "PENDIENTE" : "ENTREGADO";
+                    } else {
+                        fila[i] = resultSet.getObject(i + 1);
+                    }
+                }
+                modelo.addRow(fila);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return tabla;
+}
+
+
+
+
 
     //Subclase para los usuarios
     public static class Usuario {
