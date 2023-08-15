@@ -114,13 +114,13 @@ public class Libros_Borrar extends javax.swing.JPanel {
 
         tbl_Libros_Borrar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "BUSCAR LIBRO..."
+
             }
         ));
         jScrollPane1.setViewportView(tbl_Libros_Borrar);

@@ -1457,6 +1457,14 @@ public class Modelo {
     }
 
     //Metodo que busca el libro por ID
+    /**
+     * Busca un libro por su ID en la base de datos y llena una JTable con los
+     * resultados.
+     *
+     * @param tabla La JTable en la que se mostrarán los resultados.
+     * @param idLibro El ID del libro a buscar.
+     * @return La JTable actualizada con los resultados de la búsqueda.
+     */
     public static JTable buscarLibro(JTable tabla, int idLibro) {
         // Definimos la sentencia para llamar al procedimiento almacenado BuscarLibroPorID
         String callProcedure = "CALL BuscarLibroPorID(?)";
@@ -1470,16 +1478,26 @@ public class Modelo {
             callableStatement.setInt(1, idLibro);
 
             try ( ResultSet resultado = callableStatement.executeQuery()) {
-                while (resultado.next()) {
-                    // Obtenemos los datos del resultado de la consulta
-                    int id = resultado.getInt("idLibro");
-                    String titulo = resultado.getString("titulo");
-                    String autor = resultado.getString("autor");
-                    String genero = resultado.getString("genero");
-                    String editorial = resultado.getString("editorial");
+                int columnas = resultado.getMetaData().getColumnCount();
+                String[] nombresColumnas = new String[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    nombresColumnas[i] = resultado.getMetaData().getColumnName(i + 1);
+                }
 
-                    // Agregamos los datos a la tabla
-                    modeloTabla.addRow(new Object[]{id, titulo, autor, genero, editorial});
+                modeloTabla.setColumnIdentifiers(nombresColumnas);
+
+                // Llenar la tabla con los resultados
+                while (resultado.next()) {
+                    Object[] fila = new Object[columnas];
+                    for (int i = 0; i < columnas; i++) {
+                        if (nombresColumnas[i].equalsIgnoreCase("estado")) {
+                            boolean estado = resultado.getBoolean(i + 1);
+                            fila[i] = estado ? "ACTIVO" : "INACTIVO";
+                        } else {
+                            fila[i] = resultado.getObject(i + 1);
+                        }
+                    }
+                    modeloTabla.addRow(fila);
                 }
             }
 
@@ -2573,7 +2591,5 @@ public class Modelo {
 
     }
 
-    
-    
     //FINALIZACION DEL PROYECTO
 }

@@ -973,7 +973,7 @@ public class Controlador implements ActionListener, KeyListener {
             try {
                 //Mandar a llamar el metodo de eliminacion logica de un libro
                 if (!librosBorrar.txt_Bid.getText().isEmpty()) {
-
+                    Modelo.logicDeleteLibro(Integer.parseInt(librosBorrar.txt_Bid.getText()));
                 } else {
                     JOptionPane.showMessageDialog(null, "FAVOR DE INGRESAR EL ID DEL LIBRO");
                 }
