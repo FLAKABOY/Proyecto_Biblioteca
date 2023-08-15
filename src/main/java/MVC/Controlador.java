@@ -68,6 +68,7 @@ public class Controlador implements ActionListener, KeyListener {
     private Agregar agregarPanel;
     private Agregar_Admin agregarAdmin;
     private Agregar_Autor agregarAutor;
+    private Agregar_Editorial agregarEditorial;
     
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
@@ -109,6 +110,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.agregarPanel = new Agregar();
         this.agregarAdmin = new Agregar_Admin();
         this.agregarAutor = new Agregar_Autor();
+        this.agregarEditorial = new Agregar_Editorial();
         
 
         //Botones del Dashjboard
@@ -219,6 +221,10 @@ public class Controlador implements ActionListener, KeyListener {
         //Botones para agregar Autor
         this.agregarAutor.btn_agregar.addActionListener(this);
         this.agregarAutor.btn_Regresar.addActionListener(this);
+        
+        //Botones para Editorial
+        this.agregarEditorial.btn_agregar.addActionListener(this);
+        this.agregarEditorial.btn_Regresar.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -294,9 +300,12 @@ public class Controlador implements ActionListener, KeyListener {
         //KeyListener para los TextField de el panel de Admin_Vista
         this.adminVista.txt_idUsuario.addKeyListener(this);
         
-        //KeyListener para los TextField de el panel de Admin_Vista
+        //KeyListener para los TextField de el panel de Agregar Autor
         this.agregarAutor.txt_Autor.addKeyListener(this);
         this.agregarAutor.txt_nacionalidad.addKeyListener(this);
+        
+        //KeyListener para los TextField de el panel de Agregar Editorial
+        this.agregarEditorial.txt_Editorial.addKeyListener(this);
 
     }
 
@@ -1064,7 +1073,7 @@ public class Controlador implements ActionListener, KeyListener {
         else if(agregarPanel.btn_Editorial == evento.getSource()){
             try{
                 //Llamar al metodo para mostrar el panel de agregar editorial
-                
+                vista.content = vista(agregarEditorial);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1142,6 +1151,30 @@ public class Controlador implements ActionListener, KeyListener {
             try{
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para agregar Editorial
+        if(agregarEditorial.btn_agregar == evento.getSource()){
+            try{
+                //Validar que los campos no esten vacios
+                if(!agregarEditorial.txt_Editorial.getText().isEmpty()){
+                    //Mandar a llamar el metodo paar agregar editorial
+                    Modelo.insertEditorial(agregarEditorial.txt_Editorial.getText());
+                    agregarEditorial.txt_Editorial.setText("");
+                    vista.content = vista(agregarPanel);
+                }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if( agregarEditorial.btn_Regresar == evento.getSource()){
+            try{
+                //Regresar al panel de añadir
+                vista.content = vista(agregarPanel);
+                agregarEditorial.txt_Editorial.setText("");
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1472,6 +1505,15 @@ public class Controlador implements ActionListener, KeyListener {
             if (agregarAutor.txt_nacionalidad.getText().length() >= 50) {
                 evento.consume();
             } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
+                evento.consume();
+            }
+        }
+        
+        //Caja de texto agregar Editorial
+        if(agregarEditorial.txt_Editorial == evento.getSource()){
+            if (agregarAutor.txt_nacionalidad.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
                 evento.consume();
             }
         }

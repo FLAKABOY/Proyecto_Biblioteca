@@ -2240,6 +2240,27 @@ public class Modelo {
         }
     }
 
+    public static void insertEditorial(String editorial) {
+        String query = "INSERT INTO editorial (editorial) VALUES (?)";
+
+        try ( Connection connection = conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, editorial);
+
+            int filasInsertadas = preparedStatement.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("Editorial insertada exitosamente.");
+                JOptionPane.showMessageDialog(null, "Editorial insertada exitosamente.");
+            } else {
+                System.out.println("No se pudo insertar la editorial.");
+                JOptionPane.showMessageDialog(null, "Error al insertar la editorial.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     //Subclase para los usuarios
     public static class Usuario {
 
