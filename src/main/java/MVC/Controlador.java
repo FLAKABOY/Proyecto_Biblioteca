@@ -67,7 +67,8 @@ public class Controlador implements ActionListener, KeyListener {
     private Admin_Vista adminVista;
     private Agregar agregarPanel;
     private Agregar_Admin agregarAdmin;
-
+    private Agregar_Autor agregarAutor;
+    
     //Constructor
     /*Se colocan el contructor de parametros y se le pasan los parametros
     correspondientes, el Modelo se encargara de todo el funcionamiento y 
@@ -107,6 +108,7 @@ public class Controlador implements ActionListener, KeyListener {
         this.adminVista = new Admin_Vista();
         this.agregarPanel = new Agregar();
         this.agregarAdmin = new Agregar_Admin();
+        this.agregarAutor = new Agregar_Autor();
         
 
         //Botones del Dashjboard
@@ -213,6 +215,10 @@ public class Controlador implements ActionListener, KeyListener {
         //Botones de agregar administrador
         this.agregarAdmin.btn_agregar.addActionListener(this);
         this.agregarAdmin.btn_Regresar.addActionListener(this);
+        
+        //Botones para agregar Autor
+        this.agregarAutor.btn_agregar.addActionListener(this);
+        this.agregarAutor.btn_Regresar.addActionListener(this);
 
         /*En este apartado se agregaran los keyListener para limitar
         la cantidad de caracteres a ingresar en los JTextField o el tipo de
@@ -287,6 +293,10 @@ public class Controlador implements ActionListener, KeyListener {
         
         //KeyListener para los TextField de el panel de Admin_Vista
         this.adminVista.txt_idUsuario.addKeyListener(this);
+        
+        //KeyListener para los TextField de el panel de Admin_Vista
+        this.agregarAutor.txt_Autor.addKeyListener(this);
+        this.agregarAutor.txt_nacionalidad.addKeyListener(this);
 
     }
 
@@ -1046,6 +1056,7 @@ public class Controlador implements ActionListener, KeyListener {
         else if(agregarPanel.btn_Autor == evento.getSource()){
             try{
                 //Llamar al metodo para mostrar el panel de agregar un nuevo autor
+                vista.content = vista(agregarAutor);
             }catch(RuntimeException e){
                 JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
             }
@@ -1083,6 +1094,10 @@ public class Controlador implements ActionListener, KeyListener {
                     if(agregarAdmin.txt_pass.getText().equals(agregarAdmin.txt_Confirm.getText())){
                         //Llamar al metodo para insertar un administrador en la tabla
                         Modelo.insertAdmin(agregarAdmin.txt_User.getText(), agregarAdmin.txt_pass.getText());
+                        agregarAdmin.txt_User.setText("");
+                        agregarAdmin.txt_pass.setText("");
+                        agregarAdmin.txt_Confirm.setText("");
+                        vista.content = vista(agregarPanel);
                     }
                     else{
                         JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
@@ -1097,6 +1112,33 @@ public class Controlador implements ActionListener, KeyListener {
             }
         }
         else if(agregarAdmin.btn_Regresar == evento.getSource()){
+            try{
+                //Regresar al panel de añadir
+                vista.content = vista(agregarPanel);
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        
+        //Apartado para agregar Autor
+        if(agregarAutor.btn_agregar == evento.getSource()){
+            try{
+                //Validar que los campos no esten vacios
+                if(!agregarAutor.txt_Autor.getText().isEmpty() && !agregarAutor.txt_nacionalidad.getText().isEmpty() && (agregarAutor.jdc_fechaNacimiento.getDate() != null)){
+                    //Mandar a llamar al metodo para inserter el Autor
+                    Modelo.insertAutor(agregarAutor.txt_Autor.getText(),
+                            agregarAutor.txt_nacionalidad.getText(),
+                            ((JTextField) agregarAutor.jdc_fechaNacimiento.getDateEditor().getUiComponent()).getText());
+                    agregarAutor.txt_Autor.setText("");
+                    agregarAutor.txt_nacionalidad.setText("");
+                    agregarAutor.jdc_fechaNacimiento.setDateFormatString("");
+                    vista.content = vista(agregarPanel);
+                }
+            }catch(RuntimeException e){
+                JOptionPane.showMessageDialog(null, "ERROR GENERAL FAVOR DE LLAMAR AL ESPECIALISTA");
+            }
+        }
+        else if(agregarAutor.btn_Regresar == evento.getSource()){
             try{
                 //Regresar al panel de añadir
                 vista.content = vista(agregarPanel);
@@ -1414,6 +1456,26 @@ public class Controlador implements ActionListener, KeyListener {
                 evento.consume();
             }
         }
+        
+        //---Los administradores pueden tener cualquier caracter en usuario y contraseña---\\
+        
+        //Cajas de texto para agregar autores
+        if(agregarAutor.txt_Autor == evento.getSource()){
+            if (agregarAutor.txt_Autor.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c != ' ')) {
+                evento.consume();
+            }
+        }
+        
+        if(agregarAutor.txt_nacionalidad == evento.getSource()){
+            if (agregarAutor.txt_nacionalidad.getText().length() >= 50) {
+                evento.consume();
+            } else if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
+                evento.consume();
+            }
+        }
+        
 
     }//Llave del metodo keyTyped
 

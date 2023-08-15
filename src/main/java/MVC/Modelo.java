@@ -2194,6 +2194,7 @@ public class Modelo {
         return tabla;
     }
 
+    //Agregar un nuevo administrador
     public static void insertAdmin(String usuario, String contra) {
         // Encripta la contraseña ingresada
         String hashedPass = hashPassword(contra.toCharArray());
@@ -2212,6 +2213,30 @@ public class Modelo {
         } catch (SQLException e) {
             e.printStackTrace();
             // Manejo de excepciones en caso de algún error en la base de datos
+        }
+    }
+
+    public static void insertAutor(String nombre, String nacionalidad, String fechaNacimiento) {
+        String query = "INSERT INTO autor (nombre, nacionalidad, fechaNacimiento, estado) VALUES (?, ?, ?, 1)";
+
+        try ( Connection connection = Modelo.conectar();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, nombre);
+            preparedStatement.setString(2, nacionalidad);
+            preparedStatement.setString(3, fechaNacimiento);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Autor insertado exitosamente.");
+                System.out.println("Autor insertado exitosamente.");
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo insertar el autor.");
+                System.out.println("No se pudo insertar el autor.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
