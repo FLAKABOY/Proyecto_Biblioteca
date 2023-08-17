@@ -926,16 +926,17 @@ public class Modelo {
                                 int cantidadFolios = obtenerCantidadFoliosResult.getInt(1);
 
                                 // Obtener la cantidad permitida de folios para el préstamo
-                                String obtenerCantidadPermitidaQuery = "SELECT obtenerCantidadPermitida(?)";
+                                String obtenerCantidadPermitidaQuery = "SELECT cantLib FROM prestamos WHERE idPrestamo = ?";
 
                                 try ( PreparedStatement obtenerCantidadPermitidaStatement = connection.prepareStatement(obtenerCantidadPermitidaQuery)) {
                                     obtenerCantidadPermitidaStatement.setInt(1, idPrestamo);
 
+                                    System.out.println(obtenerCantidadFoliosStatement);
                                     try ( ResultSet obtenerCantidadPermitidaResult = obtenerCantidadPermitidaStatement.executeQuery()) {
                                         obtenerCantidadPermitidaResult.next();
                                         int cantidadPermitida = obtenerCantidadPermitidaResult.getInt(1);
 
-                                        if (cantidadFolios < cantidadPermitida) {
+                                        if (cantidadFolios <= cantidadPermitida) {
                                             // Ahora podemos insertar en la tabla de folio utilizando los datos obtenidos
                                             String insertQuery = "INSERT INTO folio (idPrestamo, idLibro, idUsuario) VALUES (?, ?, ?)";
                                             try ( PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
@@ -944,7 +945,7 @@ public class Modelo {
                                                 insertStatement.setInt(2, idLibro);
 
                                                 // Obtener el ID del usuario del préstamo
-                                                String obtenerIdUsuarioPrestamoQuery = "SELECT obtenerDatosPrestamo_IDUsuario(?)";
+                                                String obtenerIdUsuarioPrestamoQuery = "SELECT idUsuario FROM prestamos WHERE idPrestamo = ?";
 
                                                 try ( PreparedStatement obtenerIdUsuarioPrestamoStatement = connection.prepareStatement(obtenerIdUsuarioPrestamoQuery)) {
                                                     obtenerIdUsuarioPrestamoStatement.setInt(1, idPrestamo);
